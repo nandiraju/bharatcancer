@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cancerData } from "./data/cancerData";
 import IndiaMap from "./components/IndiaMap";
 import ForceGraph from "./components/ForceGraph";
+import darkLogo from "./assets/dark_logo.png";
 
 // Styled HUD panel component matching the cockpit double-bracket style
 interface HudPanelProps {
@@ -271,7 +272,7 @@ export default function App() {
         
         {/* Left Logo */}
         <div className="flex items-center">
-          <img src="/logo-full-light.png" alt="Bharat Cancer" className="h-6 object-contain" />
+          <img src={darkLogo} alt="Bharat Cancer" className="h-6 object-contain" />
         </div>
 
         {/* Center Title Trapezoid */}
