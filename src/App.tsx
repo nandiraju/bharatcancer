@@ -272,7 +272,9 @@ export default function App() {
         
         {/* Left Logo */}
         <div className="flex items-center">
-          <img src={darkLogo} alt="Bharat Cancer" className="h-6 object-contain" />
+          <a href="https://1cell.ai" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+            <img src={darkLogo} alt="Bharat Cancer" className="h-8 object-contain" />
+          </a>
         </div>
 
         {/* Center Title Trapezoid */}
