@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  
+  --color-brand-dark: #010816; /* Pitch Black Navy */
+  --color-brand-card: rgba(2, 12, 30, 0.82); /* Dark cockpit panel */
+  --color-brand-border: rgba(0, 240, 255, 0.18); /* Neon Cyan border */
+  --color-brand-cyan: #00f0ff; /* Electric Cyan */
+  --color-brand-blue: #007eff; /* Digital Blue */
+  --color-brand-pink: #ec4899; /* Pink */
+  --color-brand-purple: #8b5cf6; /* Purple */
+  --color-brand-gold: #ffb703; /* Gold Warning */
+  --color-brand-green: #00ff66; /* Safe Status Green */
+  --color-brand-orange: #ff5e00; /* Moderate Status Orange */
+}
+
+@utility glass-panel {
+  background: rgba(2, 12, 30, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  box-shadow: inset 0 0 18px rgba(0, 240, 255, 0.03);
+}
+
+@utility text-glow-cyan {
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+}
+
+@utility text-glow-blue {
+  text-shadow: 0 0 10px rgba(0, 126, 255, 0.7);
+}
+
+@utility text-glow-gold {
+  text-shadow: 0 0 10px rgba(255, 183, 3, 0.6);
+}
+
+@utility glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+
+@utility glow-blue {
+  box-shadow: 0 0 15px rgba(0, 126, 255, 0.15);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #010816;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0b1f3c;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 240, 255, 0.08);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00f0ff;
+  box-shadow: 0 0 8px #00f0ff;
+}
+
+body {
+  background-color: #010816;
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+  overflow: hidden; /* Lock viewport for command center layout */
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Cyber grid background layer */
+.hud-grid-bg {
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+}
+
+/* Glowing dots pattern */
+.hud-dots-bg {
+  background-image: radial-gradient(rgba(0, 240, 255, 0.12) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+/* Laser scan animation */
+@keyframes laserScan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+.laser-scan-line {
+  animation: laserScan 8s linear infinite;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Custom cyber-bracket panel styles */
+.hud-bracket-l::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  border-top: 2px solid #00f0ff;
+  border-bottom: 2px solid #00f0ff;
+  border-left: 2px solid #00f0ff;
+  opacity: 0.85;
+}
+
+.hud-bracket-r::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  border-top: 2px solid #00f0ff;
+  border-bottom: 2px solid #00f0ff;
+  border-right: 2px solid #00f0ff;
+  opacity: 0.85;
+}
+
+/* Bevelled shapes */
+.clip-bezel-top {
+  clip-path: polygon(15px 0%, calc(100% - 15px) 0%, 100% 100%, 0% 100%);
+}
+
+.clip-bezel-bottom {
+  clip-path: polygon(0% 0%, 100% 0%, calc(100% - 15px) 100%, 15px 100%);
+}
+
+.clip-trapezoid {
+  clip-path: polygon(20px 0%, calc(100% - 20px) 0%, 100% 100%, 0% 100%);
+}
+
+/* Selected and hovered state pulse animation */
+@keyframes statePulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.45)) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.9)) brightness(1.3);
+  }
+}
+
+.hud-state-pulse {
+  animation: statePulse 1.8s infinite ease-in-out;
+}
