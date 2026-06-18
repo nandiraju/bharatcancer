@@ -132,46 +132,28 @@ export default function App() {
               { id: 'urban',  label: 'Urban',       icon: <Building2 size={15} strokeWidth={1.6} /> },
               { id: 'rural',  label: 'Rural',       icon: <Trees    size={15} strokeWidth={1.6} /> },
             ].map(({ id, label, icon }) => (
-              <div key={id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                <SkeuButton
-                  size="sm"
-                  icon={icon}
-                  label={label}
-                  active={filterMode === id}
-                  onClick={() => setFilterMode(id)}
-                />
-                <span style={{
-                  fontSize: 9,
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  color: filterMode === id ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.28)',
-                  transition: 'color 0.15s',
-                  userSelect: 'none',
-                }}>
-                  {label}
-                </span>
-              </div>
+              <SkeuButton
+                key={id}
+                size="sm"
+                icon={icon}
+                label={label}
+                showLabel
+                active={filterMode === id}
+                onClick={() => setFilterMode(id)}
+              />
             ))}
           </SkeuButtonGroup>
         </div>
         <div className="topbar-meta">
           {/* Rank toggle */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <SkeuButton
+          <SkeuButton
               size="sm"
               icon={<ListOrdered size={15} strokeWidth={1.6} />}
-              label="Rank by State"
+              label="Rank"
+              showLabel
               active={showRanks}
               onClick={() => setShowRanks(p => !p)}
             />
-            <span style={{
-              fontSize: 9, fontWeight: 600, letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              color: showRanks ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.28)',
-              transition: 'color 0.15s', userSelect: 'none',
-            }}>Rank</span>
-          </div>
           <span>2022</span>
           <span className="topbar-badge">Public Data</span>
         </div>
