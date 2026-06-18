@@ -2,13 +2,96 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>India Cancer Statistics Dashboard | ICMR-NCRP / GLOBOCAN 2022</title>
-    <meta name="description" content="Ultra-modern India cancer statistics dashboard powered by ICMR-NCRP, NCDIR, and GLOBOCAN 2022 public data. Visualising state-wise incidence, mortality, lifetime risk, and leading cancer sites." />
-    <meta name="keywords" content="India cancer statistics, ICMR-NCRP, GLOBOCAN 2022, NCDIR, cancer incidence, cancer mortality, state-wise cancer data" />
 
-    <!-- Preconnect for Google Fonts -->
+    <!-- ═══════════════════════════════════════════════
+         PRIMARY META
+    ═══════════════════════════════════════════════ -->
+    <title>BharatCancer | India Cancer Statistics Dashboard</title>
+    <meta name="description" content="Interactive India cancer statistics dashboard visualising state-wise incidence, mortality, lifetime risk, and leading cancer sites. Powered by ICMR-NCRP, NCDIR, and GLOBOCAN 2022 public data." />
+    <meta name="keywords" content="India cancer statistics, BharatCancer, ICMR-NCRP, GLOBOCAN 2022, NCDIR, cancer incidence India, cancer mortality India, state-wise cancer data, cancer dashboard, cancer burden India, cancer map India" />
+    <meta name="author" content="Srikanth Nandiraju" />
+    <meta name="creator" content="Srikanth Nandiraju" />
+    <meta name="publisher" content="Srikanth Nandiraju" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- ═══════════════════════════════════════════════
+         CANONICAL
+    ═══════════════════════════════════════════════ -->
+    <link rel="canonical" href="https://bharatcancer.com/" />
+
+    <!-- ═══════════════════════════════════════════════
+         OPEN GRAPH (Facebook, LinkedIn, WhatsApp, etc.)
+    ═══════════════════════════════════════════════ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BharatCancer" />
+    <meta property="og:title" content="BharatCancer | India Cancer Statistics Dashboard" />
+    <meta property="og:description" content="Interactive India cancer statistics dashboard visualising state-wise incidence, mortality, lifetime risk, and leading cancer sites. Powered by ICMR-NCRP, NCDIR &amp; GLOBOCAN 2022." />
+    <meta property="og:url" content="https://bharatcancer.com/" />
+    <meta property="og:image" content="https://bharatcancer.com/logo.png" />
+    <meta property="og:image:alt" content="BharatCancer — India Cancer Statistics Dashboard" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ═══════════════════════════════════════════════
+         TWITTER / X CARD
+    ═══════════════════════════════════════════════ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BharatCancer | India Cancer Statistics Dashboard" />
+    <meta name="twitter:description" content="Interactive India cancer statistics dashboard — state-wise incidence, mortality, lifetime risk &amp; leading cancer sites. Data: ICMR-NCRP / GLOBOCAN 2022." />
+    <meta name="twitter:image" content="https://bharatcancer.com/logo.png" />
+    <meta name="twitter:image:alt" content="BharatCancer Dashboard" />
+    <meta name="twitter:creator" content="@srikanthnandiraju" />
+    <meta name="twitter:site" content="@srikanthnandiraju" />
+
+    <!-- ═══════════════════════════════════════════════
+         STRUCTURED DATA — JSON-LD
+    ═══════════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "BharatCancer",
+      "alternateName": "India Cancer Statistics Dashboard",
+      "description": "Interactive dashboard visualising India cancer statistics — state-wise incidence, mortality, lifetime risk, and leading cancer sites. Data sourced from ICMR-NCRP, NCDIR, and GLOBOCAN 2022.",
+      "url": "https://bharatcancer.com/",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "All",
+      "inLanguage": "en-IN",
+      "author": {
+        "@type": "Person",
+        "name": "Srikanth Nandiraju",
+        "url": "https://github.com/nandiraju"
+      },
+      "creator": {
+        "@type": "Person",
+        "name": "Srikanth Nandiraju"
+      },
+      "dateModified": "2026-06-18",
+      "about": {
+        "@type": "MedicalCondition",
+        "name": "Cancer",
+        "alternateName": "Malignant Neoplasm"
+      },
+      "keywords": "India cancer statistics, ICMR-NCRP, GLOBOCAN 2022, cancer incidence, cancer mortality, state-wise cancer data",
+      "image": "https://bharatcancer.com/logo.png",
+      "isAccessibleForFree": true,
+      "license": "https://creativecommons.org/licenses/by/4.0/"
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════
+         FAVICON
+    ═══════════════════════════════════════════════ -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+
+    <!-- ═══════════════════════════════════════════════
+         FONTS
+    ═══════════════════════════════════════════════ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
