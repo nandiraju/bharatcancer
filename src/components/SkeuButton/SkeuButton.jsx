@@ -51,9 +51,6 @@ export default function SkeuButton({
       onMouseLeave={() => setPressed(false)}
       {...rest}
     >
-      {/* Top-edge highlight sheen */}
-      <span className="skeu-btn__sheen" aria-hidden="true" />
-
       {/* Icon container */}
       <span className="skeu-btn__icon">{icon}</span>
 
