@@ -1,8 +1,23 @@
 /* ═══════════════════════════════════════════════════════════
-   SkeuButton — Skeuomorphic keycap button system
+   SkeuButton — Physical keycap design
+   Individual raised keys with 3-D bottom edge and backlit
+   active glow. Matches reference image exactly.
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Base button ─────────────────────────────────────────── */
+/* ══ GROUP — simple flex row, no tray ════════════════════ */
+.skeu-btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.skeu-btn-divider {
+  display: inline-block;
+  width: 6px;
+  height: 1px;
+}
+
+/* ── Base keycap ──────────────────────────────────────────── */
 .skeu-btn {
   position: relative;
   display: inline-flex;
@@ -13,240 +28,170 @@
   cursor: pointer;
   user-select: none;
   flex-shrink: 0;
+  border-radius: 11px;
 
-  /* Keycap shape */
-  border-radius: 14px;
-
-  /* Default surface — dark charcoal gradient (top lighter → bottom darker) */
+  /* Key surface — dark charcoal with very subtle top-to-bottom gradient */
   background: linear-gradient(
-    180deg,
-    #3d3d3f 0%,
-    #2c2c2e 40%,
-    #252527 100%
+    175deg,
+    #3c3c40 0%,
+    #2e2e32 100%
   );
 
-  /* Physical border — dark rim all around, subtly lighter on top */
+  /* 3-D raised keycap:
+     — dark outer rim
+     — physical bottom-face edge (gives depth/height illusion)
+     — ambient shadow below */
   box-shadow:
     /* Outer rim */
-    0 0 0 1px rgba(0, 0, 0, 0.70),
-    /* Top rim highlight */
-    inset 0 1px 0 rgba(255, 255, 255, 0.10),
-    /* Bottom inner shadow (depth) */
-    inset 0 -3px 6px rgba(0, 0, 0, 0.55),
-    /* Left+right inner edge darken */
-    inset 3px 0 6px rgba(0, 0, 0, 0.18),
-    inset -3px 0 6px rgba(0, 0, 0, 0.18),
-    /* Cast shadow below */
-    0 4px 10px rgba(0, 0, 0, 0.65),
-    0 1px 3px rgba(0, 0, 0, 0.45);
+    0 0 0 1px rgba(0, 0, 0, 0.75),
+    /* Physical bottom edge — the "side" of the key */
+    0 4px 0 0 rgba(0, 0, 0, 0.55),
+    /* Ambient drop shadow */
+    0 6px 14px rgba(0, 0, 0, 0.50),
+    0 2px 4px  rgba(0, 0, 0, 0.40);
 
-  /* Smooth press / active transitions */
   transition:
-    box-shadow 0.08s ease,
-    transform 0.08s ease,
-    background 0.12s ease;
+    box-shadow  0.10s ease,
+    transform   0.10s ease,
+    background  0.12s ease;
 
-  /* Prevent focus ring */
   -webkit-tap-highlight-color: transparent;
-}
-
-/* ── Sheen overlay (top-edge catchlight) ─────────────────── */
-.skeu-btn__sheen {
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 40%;
-  border-radius: 14px 14px 50% 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.09) 0%,
-    rgba(255, 255, 255, 0.00) 100%
-  );
 }
 
 /* ── Icon ────────────────────────────────────────────────── */
 .skeu-btn__icon {
-  position: relative; /* above sheen */
+  position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(210, 210, 215, 0.72);
-  transition: color 0.1s ease;
+  color: rgba(160, 160, 168, 0.55);
+  transition: color 0.15s ease, filter 0.15s ease;
+}
+
+/* ── Inline label ────────────────────────────────────────── */
+.skeu-btn__label {
+  position: relative;
+  z-index: 1;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(160, 160, 168, 0.55);
+  white-space: nowrap;
+  transition: color 0.15s ease, filter 0.15s ease;
 }
 
 /* ══ SIZES ════════════════════════════════════════════════ */
 .skeu-btn--sm {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
 }
 .skeu-btn--sm .skeu-btn__icon { font-size: 14px; }
-.skeu-btn--sm .skeu-btn__sheen { border-radius: 10px 10px 50% 50%; }
 
 .skeu-btn--md {
   width: 52px;
   height: 52px;
-  border-radius: 14px;
+  border-radius: 13px;
 }
 .skeu-btn--md .skeu-btn__icon { font-size: 18px; }
 
 .skeu-btn--lg {
   width: 68px;
   height: 68px;
-  border-radius: 18px;
+  border-radius: 16px;
 }
 .skeu-btn--lg .skeu-btn__icon { font-size: 24px; }
-.skeu-btn--lg .skeu-btn__sheen { border-radius: 18px 18px 50% 50%; }
+
+/* Labeled — pill with auto width */
+.skeu-btn--labeled                         { gap: 7px; }
+.skeu-btn--labeled.skeu-btn--sm { width: auto; height: 38px; padding: 0 14px; gap: 6px; border-radius: 10px; }
+.skeu-btn--labeled.skeu-btn--md { width: auto; height: 52px; padding: 0 18px; gap: 8px; border-radius: 13px; }
+.skeu-btn--labeled.skeu-btn--lg { width: auto; height: 68px; padding: 0 22px; gap: 10px; border-radius: 16px; }
 
 /* ══ STATES ═══════════════════════════════════════════════ */
 
-/* Hover — subtle lift */
+/* Hover — faint surface brightening */
 .skeu-btn:hover:not(.skeu-btn--disabled):not(.skeu-btn--active) {
   background: linear-gradient(
-    180deg,
-    #454547 0%,
-    #333335 40%,
-    #2a2a2c 100%
+    175deg,
+    #434348 0%,
+    #33333a 100%
   );
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.13),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.50),
-    inset 3px 0 6px rgba(0, 0, 0, 0.14),
-    inset -3px 0 6px rgba(0, 0, 0, 0.14),
-    0 6px 14px rgba(0, 0, 0, 0.70),
-    0 2px 4px rgba(0, 0, 0, 0.50);
-  transform: translateY(-1px);
 }
+.skeu-btn:hover:not(.skeu-btn--disabled) .skeu-btn__icon  { color: rgba(200, 200, 208, 0.75); }
+.skeu-btn:hover:not(.skeu-btn--disabled) .skeu-btn__label { color: rgba(200, 200, 208, 0.75); }
 
-.skeu-btn:hover:not(.skeu-btn--disabled) .skeu-btn__icon {
-  color: rgba(230, 230, 235, 0.90);
-}
-
-/* Pressed — pushes down, flattens */
+/* Pressed — key pushes down, bottom edge collapses */
 .skeu-btn--pressed:not(.skeu-btn--disabled),
-.skeu-btn:active:not(.skeu-btn--disabled) {
-  background: linear-gradient(
-    180deg,
-    #252527 0%,
-    #2c2c2e 60%,
-    #333335 100%
-  );
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.75),
-    inset 0 3px 8px rgba(0, 0, 0, 0.70),
-    inset 0 1px 3px rgba(0, 0, 0, 0.55),
-    inset 3px 0 6px rgba(0, 0, 0, 0.25),
-    inset -3px 0 6px rgba(0, 0, 0, 0.25),
-    0 1px 3px rgba(0, 0, 0, 0.40);
-  transform: translateY(1px);
-}
-
-/* Active / selected — stays pressed with accent */
-.skeu-btn--active {
-  background: linear-gradient(
-    180deg,
-    #252527 0%,
-    #2c2c2e 60%,
-    #303032 100%
-  );
+.skeu-btn:active:not(.skeu-btn--disabled):not(.skeu-btn--active) {
+  transform: translateY(3px);
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.80),
-    inset 0 3px 10px rgba(0, 0, 0, 0.75),
-    inset 0 1px 3px rgba(0, 0, 0, 0.60),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
-    0 1px 2px rgba(0, 0, 0, 0.30);
-  transform: translateY(1px);
+    0 1px 0 0 rgba(0, 0, 0, 0.50),
+    0 2px 6px rgba(0, 0, 0, 0.40);
 }
 
-.skeu-btn--active .skeu-btn__icon {
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.skeu-btn--active .skeu-btn__sheen {
+/* ── ACTIVE — backlit glowing key ───────────────────────── */
+.skeu-btn--active {
   background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.03) 0%,
-    rgba(255, 255, 255, 0.00) 100%
+    175deg,
+    #3a3a3f 0%,
+    #2c2c30 100%
   );
+
+  /* Same raised look, but the key is selected / lit */
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.80),
+    0 4px 0 0 rgba(0, 0, 0, 0.60),
+    0 6px 14px rgba(0, 0, 0, 0.55),
+    0 2px 4px  rgba(0, 0, 0, 0.40),
+    /* Subtle inner glow from backlight leak */
+    inset 0 0 12px rgba(100, 200, 255, 0.06);
 }
 
-/* Disabled */
+/* Active — backlit icon glow (blue-white, like a lit keycap) */
+.skeu-btn--active .skeu-btn__icon {
+  color: #b8e4ff;
+  filter:
+    drop-shadow(0 0 4px rgba(130, 210, 255, 0.85))
+    drop-shadow(0 0 10px rgba(100, 190, 255, 0.50));
+}
+
+/* Active — backlit label glow */
+.skeu-btn--active .skeu-btn__label {
+  color: #b8e4ff;
+  filter:
+    drop-shadow(0 0 4px rgba(130, 210, 255, 0.85))
+    drop-shadow(0 0 10px rgba(100, 190, 255, 0.50));
+}
+
+/* ── DISABLED ─────────────────────────────────────────────── */
 .skeu-btn--disabled {
   cursor: not-allowed;
-  opacity: 0.38;
-  background: linear-gradient(
-    180deg,
-    #323234 0%,
-    #282829 100%
-  );
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.60),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 2px 5px rgba(0, 0, 0, 0.40);
+  opacity: 0.28;
 }
 
 /* ══ VARIANTS ════════════════════════════════════════════ */
 
-/* Accent (indigo) */
-.skeu-btn--accent {
-  background: linear-gradient(
-    180deg,
-    #5558e8 0%,
-    #4346c8 40%,
-    #3537a8 100%
-  );
+/* Accent — indigo backlight */
+.skeu-btn--accent.skeu-btn--active .skeu-btn__icon {
+  color: #c7d2fe;
+  filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.80));
 }
-.skeu-btn--accent .skeu-btn__icon { color: rgba(255, 255, 255, 0.90); }
-.skeu-btn--accent:hover:not(.skeu-btn--disabled) {
-  background: linear-gradient(
-    180deg,
-    #6366f1 0%,
-    #4f52d8 40%,
-    #3e40b8 100%
-  );
-}
-.skeu-btn--accent.skeu-btn--active {
-  background: linear-gradient(
-    180deg,
-    #3537a8 0%,
-    #4346c8 100%
-  );
+.skeu-btn--accent.skeu-btn--active .skeu-btn__label {
+  color: #c7d2fe;
+  filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.80));
 }
 
-/* Danger (rose) */
-.skeu-btn--danger {
-  background: linear-gradient(
-    180deg,
-    #c84058 0%,
-    #a83048 40%,
-    #8c2038 100%
-  );
+/* Danger — rose backlight */
+.skeu-btn--danger.skeu-btn--active .skeu-btn__icon {
+  color: #fda4af;
+  filter: drop-shadow(0 0 5px rgba(244, 63, 94, 0.80));
 }
-.skeu-btn--danger .skeu-btn__icon { color: rgba(255, 255, 255, 0.90); }
-.skeu-btn--danger:hover:not(.skeu-btn--disabled) {
-  background: linear-gradient(
-    180deg,
-    #e05070 0%,
-    #c04060 40%,
-    #a03050 100%
-  );
-}
-
-/* ══ GROUP ═══════════════════════════════════════════════ */
-.skeu-btn-group {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* Visual gap divider between button clusters */
-.skeu-btn-divider {
-  display: inline-block;
-  width: 8px;
-  height: 1px;
-  /* invisible — just spacing */
+.skeu-btn--danger.skeu-btn--active .skeu-btn__label {
+  color: #fda4af;
+  filter: drop-shadow(0 0 5px rgba(244, 63, 94, 0.80));
 }

@@ -17,6 +17,7 @@ import './SkeuButton.css';
 export default function SkeuButton({
   icon,
   label,
+  showLabel = false,
   active    = false,
   disabled  = false,
   size      = 'md',
@@ -31,6 +32,7 @@ export default function SkeuButton({
     'skeu-btn',
     `skeu-btn--${size}`,
     `skeu-btn--${variant}`,
+    showLabel ? 'skeu-btn--labeled' : '',
     active   ? 'skeu-btn--active'   : '',
     disabled ? 'skeu-btn--disabled' : '',
     pressed  ? 'skeu-btn--pressed'  : '',
@@ -49,11 +51,13 @@ export default function SkeuButton({
       onMouseLeave={() => setPressed(false)}
       {...rest}
     >
-      {/* Top-edge highlight sheen */}
-      <span className="skeu-btn__sheen" aria-hidden="true" />
-
       {/* Icon container */}
       <span className="skeu-btn__icon">{icon}</span>
+
+      {/* Inline label — only rendered when showLabel is true */}
+      {showLabel && label && (
+        <span className="skeu-btn__label">{label}</span>
+      )}
     </button>
   );
 }

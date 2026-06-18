@@ -8,7 +8,7 @@
 
 .stripScroll {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
   overflow-x: auto;
   scrollbar-width: none;
@@ -19,9 +19,9 @@
 
 .stateItem {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex-shrink: 0;
   cursor: pointer;
   transition: transform 150ms ease;
@@ -49,7 +49,7 @@
 
 .pillLabel {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -57,14 +57,14 @@
   background: rgba(0,0,0,0.5);
   border: 1px solid var(--state-color);
   border-radius: 999px;
-  padding: 1px 6px;
+  padding: 2px 8px;
   white-space: nowrap;
   box-shadow: 0 0 6px var(--state-color);
 }
 
 .codeLabel {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 500;
   color: rgba(167, 139, 250, 0.5);
   letter-spacing: 0.05em;
