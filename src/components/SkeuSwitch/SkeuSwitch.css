@@ -1,0 +1,256 @@
+/* ═══════════════════════════════════════════════════════════
+   SkeuSwitch — Skeuomorphic physical slide switch
+   Features recessed slot, purple backlit neon text, raised thumb,
+   and physical grip bumps.
+   ═══════════════════════════════════════════════════════════ */
+
+.skeu-switch-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+/* External label */
+.skeu-switch-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(160, 160, 168, 0.55);
+  transition: color 0.15s ease;
+}
+
+/* Recessed track / slot */
+.skeu-switch-track {
+  position: relative;
+  width: 76px;
+  height: 32px;
+  background-color: #0d0f14;
+  border-radius: 16px;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 11px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  /* Physical bezel around slot */
+  box-shadow:
+    /* Bezel bottom highlight */
+    0 1px 1px 0 rgba(255, 255, 255, 0.08),
+    /* Deep interior cutout shadow (sunken) */
+    inset 0 3px 6px rgba(0, 0, 0, 0.85),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(0, 0, 0, 0.85);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Focus and active styles */
+.skeu-switch-track:focus-visible {
+  box-shadow:
+    0 0 0 1.5px rgba(180, 120, 250, 0.7),
+    inset 0 3px 6px rgba(0, 0, 0, 0.9);
+}
+
+.skeu-switch-track--checked {
+  border-color: rgba(0, 0, 0, 0.9);
+  box-shadow:
+    0 1px 1px 0 rgba(255, 255, 255, 0.08),
+    /* Deep inner shadow */
+    inset 0 3px 6px rgba(0, 0, 0, 0.85),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.05),
+    /* Soft ambient glow bleed */
+    0 0 8px rgba(180, 120, 250, 0.25);
+}
+
+/* Ambient glow overlay in the track when ON (right half) */
+.skeu-switch-track::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 60%;
+  background: radial-gradient(
+    circle at center,
+    rgba(180, 120, 250, 0.38) 0%,
+    rgba(180, 120, 250, 0.08) 55%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.skeu-switch-track--checked::before {
+  opacity: 1;
+}
+
+/* Text labels inside the track */
+.skeu-switch-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* OFF state (left label) */
+.skeu-switch-text--off {
+  color: rgba(120, 115, 135, 0.28); /* Dim purple-gray */
+  text-shadow:
+    -0.5px -0.5px 0.5px rgba(0, 0, 0, 0.8),
+    0.5px 0.5px 0.5px rgba(255, 255, 255, 0.03);
+}
+
+.skeu-switch-track--checked .skeu-switch-text--off {
+  opacity: 0.15;
+}
+
+/* ON state (right label) */
+.skeu-switch-text--on {
+  color: rgba(120, 115, 135, 0.28); /* Default unlit state */
+  text-shadow:
+    -0.5px -0.5px 0.5px rgba(0, 0, 0, 0.8),
+    0.5px 0.5px 0.5px rgba(255, 255, 255, 0.03);
+}
+
+/* Glowing ON state text */
+.skeu-switch-track--checked .skeu-switch-text--on {
+  color: #ebdfff; /* Neon white/purple core */
+  text-shadow:
+    0 0 3px rgba(180, 120, 250, 0.95),
+    0 0 8px rgba(180, 120, 250, 0.65),
+    0 0 15px rgba(180, 120, 250, 0.30);
+}
+
+/* Sliding keycap thumb */
+.skeu-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 38px;
+  height: 24px;
+  border-radius: 12px;
+  z-index: 2;
+
+  /* Physical keycap styling: top-to-bottom dark gradient */
+  background: linear-gradient(
+    180deg,
+    #3c3c42 0%,
+    #2c2c30 100%
+  );
+
+  /* Raised 3D shadow and bottom side-face */
+  box-shadow:
+    /* Outer rim border */
+    0 0 0 1px rgba(0, 0, 0, 0.75),
+    /* 3D bottom side edge */
+    0 2.5px 0 0 rgba(0, 0, 0, 0.65),
+    /* Ground drop shadows */
+    0 4px 8px rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* OFF state (default): thumb slides to the right */
+  transform: translateX(30px);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+  pointer-events: none;
+}
+
+/* ON state: thumb slides to the left */
+.skeu-switch-thumb--checked {
+  transform: translateX(0px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.75),
+    0 2.5px 0 0 rgba(0, 0, 0, 0.65),
+    0 4px 8px rgba(0, 0, 0, 0.45),
+    /* Faint backlight reflection on the right edge of thumb */
+    inset -2px 0 4px rgba(180, 120, 250, 0.25);
+}
+
+/* Grip bumps container (2 rows, 5 columns) */
+.skeu-switch-grip {
+  display: grid;
+  grid-template-columns: repeat(5, 1.5px);
+  grid-template-rows: repeat(2, 1.5px);
+  gap: 3.5px;
+}
+
+/* Grip bump dots */
+.skeu-switch-grip-dot {
+  width: 1.5px;
+  height: 1.5px;
+  border-radius: 50%;
+  background-color: #1a1b1f;
+
+  /* Embossed tactile bump shading */
+  box-shadow:
+    inset 0 0.5px 0.5px rgba(0, 0, 0, 0.8),
+    0 0.5px 0.5px rgba(255, 255, 255, 0.1);
+}
+
+/* Hover effects */
+.skeu-switch-container:hover .skeu-switch-thumb {
+  background: linear-gradient(
+    180deg,
+    #424248 0%,
+    #303035 100%
+  );
+}
+
+.skeu-switch-container:hover .skeu-switch-label {
+  color: rgba(200, 200, 208, 0.75);
+}
+
+/* Disabled State */
+.skeu-switch--disabled {
+  opacity: 0.35;
+}
+.skeu-switch--disabled .skeu-switch-track {
+  cursor: not-allowed;
+}
+
+/* ══ MOBILE overrides ════════════════════════════════════ */
+@media (max-width: 639px) {
+  .skeu-switch-track {
+    width: 64px;
+    height: 28px;
+    padding: 0 9px;
+  }
+
+  .skeu-switch-thumb {
+    width: 32px;
+    height: 20px;
+    top: 3px;
+    left: 3px;
+    border-radius: 10px;
+    transform: translateX(24px); /* (64px - 6px padding) - 32px = 26px travel? 24px fits beautifully */
+  }
+
+  .skeu-switch-thumb--checked {
+    transform: translateX(0px);
+  }
+
+  .skeu-switch-text {
+    font-size: 8px;
+  }
+
+  .skeu-switch-grip {
+    gap: 2.5px;
+  }
+}

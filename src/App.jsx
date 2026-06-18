@@ -13,6 +13,7 @@ import { STATES, NATIONAL_TOTALS } from './data/stateData';
 import IndiaMap from './components/IndiaMap';
 import Gauge from './components/Gauge';
 import { SkeuButton, SkeuButtonGroup } from './components/SkeuButton';
+import SkeuSwitch from './components/SkeuSwitch';
 import './index.css';
 
 // ── helpers ──────────────────────────────────────────────
@@ -166,14 +167,11 @@ export default function App() {
         </div>
         <div className="topbar-meta">
           {/* Rank toggle */}
-          <SkeuButton
-              size="sm"
-              icon={<ListOrdered size={15} strokeWidth={1.6} />}
-              label="Rank"
-              showLabel
-              active={showRanks}
-              onClick={() => setShowRanks(p => !p)}
-            />
+          <SkeuSwitch
+            checked={showRanks}
+            onChange={() => setShowRanks(p => !p)}
+            label="Rank"
+          />
           <span>2022</span>
           <span className="topbar-badge">Public Data</span>
         </div>
