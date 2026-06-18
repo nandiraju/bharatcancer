@@ -93,15 +93,12 @@
 
 /* Labeled variant — pill shape, auto width, horizontal padding */
 .skeu-btn--labeled {
-  width: auto;
-  height: auto;
-  padding: 0 14px;
   gap: 7px;
   border-radius: 10px;
 }
-.skeu-btn--labeled.skeu-btn--sm { height: 36px; padding: 0 12px; gap: 6px; }
-.skeu-btn--labeled.skeu-btn--md { height: 52px; padding: 0 16px; gap: 8px; }
-.skeu-btn--labeled.skeu-btn--lg { height: 68px; padding: 0 20px; gap: 10px; }
+.skeu-btn--labeled.skeu-btn--sm { width: auto; height: 36px; padding: 0 12px; gap: 6px; }
+.skeu-btn--labeled.skeu-btn--md { width: auto; height: 52px; padding: 0 16px; gap: 8px; }
+.skeu-btn--labeled.skeu-btn--lg { width: auto; height: 68px; padding: 0 20px; gap: 10px; }
 
 /* Label colour follows icon on all states */
 .skeu-btn:hover:not(.skeu-btn--disabled) .skeu-btn__label { color: rgba(230, 230, 235, 0.90); }
