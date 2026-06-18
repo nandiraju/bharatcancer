@@ -1,0 +1,125 @@
+.wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.subtitle {
+  font-size: 10px;
+  color: rgba(167,139,250,0.45);
+  font-family: 'Inter', sans-serif;
+  margin-top: 3px;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendText {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(167,139,250,0.5);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.mapContainer {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mapSvg {
+  width: 100%;
+  max-height: 240px;
+}
+
+/* Ranking bars */
+.rankingSection {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+  min-height: 0;
+}
+
+.rankRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rankNum {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(167,139,250,0.5);
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.rankState {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  width: 90px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rankBarTrack {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rankBarFill {
+  height: 100%;
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(217,70,239,0.4);
+}
+
+.rankCases {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(167,139,250,0.6);
+  width: 56px;
+  text-align: right;
+  flex-shrink: 0;
+}

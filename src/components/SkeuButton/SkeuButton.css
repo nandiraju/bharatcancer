@@ -1,0 +1,252 @@
+/* ═══════════════════════════════════════════════════════════
+   SkeuButton — Skeuomorphic keycap button system
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Base button ─────────────────────────────────────────── */
+.skeu-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+
+  /* Keycap shape */
+  border-radius: 14px;
+
+  /* Default surface — dark charcoal gradient (top lighter → bottom darker) */
+  background: linear-gradient(
+    180deg,
+    #3d3d3f 0%,
+    #2c2c2e 40%,
+    #252527 100%
+  );
+
+  /* Physical border — dark rim all around, subtly lighter on top */
+  box-shadow:
+    /* Outer rim */
+    0 0 0 1px rgba(0, 0, 0, 0.70),
+    /* Top rim highlight */
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    /* Bottom inner shadow (depth) */
+    inset 0 -3px 6px rgba(0, 0, 0, 0.55),
+    /* Left+right inner edge darken */
+    inset 3px 0 6px rgba(0, 0, 0, 0.18),
+    inset -3px 0 6px rgba(0, 0, 0, 0.18),
+    /* Cast shadow below */
+    0 4px 10px rgba(0, 0, 0, 0.65),
+    0 1px 3px rgba(0, 0, 0, 0.45);
+
+  /* Smooth press / active transitions */
+  transition:
+    box-shadow 0.08s ease,
+    transform 0.08s ease,
+    background 0.12s ease;
+
+  /* Prevent focus ring */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Sheen overlay (top-edge catchlight) ─────────────────── */
+.skeu-btn__sheen {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 40%;
+  border-radius: 14px 14px 50% 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.00) 100%
+  );
+}
+
+/* ── Icon ────────────────────────────────────────────────── */
+.skeu-btn__icon {
+  position: relative; /* above sheen */
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(210, 210, 215, 0.72);
+  transition: color 0.1s ease;
+}
+
+/* ══ SIZES ════════════════════════════════════════════════ */
+.skeu-btn--sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+.skeu-btn--sm .skeu-btn__icon { font-size: 14px; }
+.skeu-btn--sm .skeu-btn__sheen { border-radius: 10px 10px 50% 50%; }
+
+.skeu-btn--md {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+}
+.skeu-btn--md .skeu-btn__icon { font-size: 18px; }
+
+.skeu-btn--lg {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+}
+.skeu-btn--lg .skeu-btn__icon { font-size: 24px; }
+.skeu-btn--lg .skeu-btn__sheen { border-radius: 18px 18px 50% 50%; }
+
+/* ══ STATES ═══════════════════════════════════════════════ */
+
+/* Hover — subtle lift */
+.skeu-btn:hover:not(.skeu-btn--disabled):not(.skeu-btn--active) {
+  background: linear-gradient(
+    180deg,
+    #454547 0%,
+    #333335 40%,
+    #2a2a2c 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.50),
+    inset 3px 0 6px rgba(0, 0, 0, 0.14),
+    inset -3px 0 6px rgba(0, 0, 0, 0.14),
+    0 6px 14px rgba(0, 0, 0, 0.70),
+    0 2px 4px rgba(0, 0, 0, 0.50);
+  transform: translateY(-1px);
+}
+
+.skeu-btn:hover:not(.skeu-btn--disabled) .skeu-btn__icon {
+  color: rgba(230, 230, 235, 0.90);
+}
+
+/* Pressed — pushes down, flattens */
+.skeu-btn--pressed:not(.skeu-btn--disabled),
+.skeu-btn:active:not(.skeu-btn--disabled) {
+  background: linear-gradient(
+    180deg,
+    #252527 0%,
+    #2c2c2e 60%,
+    #333335 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.75),
+    inset 0 3px 8px rgba(0, 0, 0, 0.70),
+    inset 0 1px 3px rgba(0, 0, 0, 0.55),
+    inset 3px 0 6px rgba(0, 0, 0, 0.25),
+    inset -3px 0 6px rgba(0, 0, 0, 0.25),
+    0 1px 3px rgba(0, 0, 0, 0.40);
+  transform: translateY(1px);
+}
+
+/* Active / selected — stays pressed with accent */
+.skeu-btn--active {
+  background: linear-gradient(
+    180deg,
+    #252527 0%,
+    #2c2c2e 60%,
+    #303032 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.80),
+    inset 0 3px 10px rgba(0, 0, 0, 0.75),
+    inset 0 1px 3px rgba(0, 0, 0, 0.60),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.30);
+  transform: translateY(1px);
+}
+
+.skeu-btn--active .skeu-btn__icon {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.skeu-btn--active .skeu-btn__sheen {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.00) 100%
+  );
+}
+
+/* Disabled */
+.skeu-btn--disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+  background: linear-gradient(
+    180deg,
+    #323234 0%,
+    #282829 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.60),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 5px rgba(0, 0, 0, 0.40);
+}
+
+/* ══ VARIANTS ════════════════════════════════════════════ */
+
+/* Accent (indigo) */
+.skeu-btn--accent {
+  background: linear-gradient(
+    180deg,
+    #5558e8 0%,
+    #4346c8 40%,
+    #3537a8 100%
+  );
+}
+.skeu-btn--accent .skeu-btn__icon { color: rgba(255, 255, 255, 0.90); }
+.skeu-btn--accent:hover:not(.skeu-btn--disabled) {
+  background: linear-gradient(
+    180deg,
+    #6366f1 0%,
+    #4f52d8 40%,
+    #3e40b8 100%
+  );
+}
+.skeu-btn--accent.skeu-btn--active {
+  background: linear-gradient(
+    180deg,
+    #3537a8 0%,
+    #4346c8 100%
+  );
+}
+
+/* Danger (rose) */
+.skeu-btn--danger {
+  background: linear-gradient(
+    180deg,
+    #c84058 0%,
+    #a83048 40%,
+    #8c2038 100%
+  );
+}
+.skeu-btn--danger .skeu-btn__icon { color: rgba(255, 255, 255, 0.90); }
+.skeu-btn--danger:hover:not(.skeu-btn--disabled) {
+  background: linear-gradient(
+    180deg,
+    #e05070 0%,
+    #c04060 40%,
+    #a03050 100%
+  );
+}
+
+/* ══ GROUP ═══════════════════════════════════════════════ */
+.skeu-btn-group {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Visual gap divider between button clusters */
+.skeu-btn-divider {
+  display: inline-block;
+  width: 8px;
+  height: 1px;
+  /* invisible — just spacing */
+}

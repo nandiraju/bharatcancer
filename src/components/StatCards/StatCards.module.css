@@ -1,0 +1,238 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.card {
+  height: 100%;
+}
+
+.cardInner {
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconBadge {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--c, rgba(139,92,246,0.4));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--c, #7c3aed) 40%, transparent);
+  flex-shrink: 0;
+}
+
+.bigNum {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.numUnit {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: rgba(167, 139, 250, 0.5);
+  text-transform: uppercase;
+}
+
+.sublabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: rgba(167, 139, 250, 0.5);
+  margin-top: -4px;
+}
+
+.sourceTag {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(167,139,250,0.35);
+}
+
+/* Mini bars */
+.miniBars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.miniBarRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.miniBarYear {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(167,139,250,0.6);
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.miniBarTrack {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.miniBarFill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.miniBarVal {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(217,70,239,0.85);
+  width: 38px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.trendBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #10b981;
+  margin-top: auto;
+}
+
+/* Gender bars */
+.genderBars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.genderBarRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.genderLabel {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(167,139,250,0.6);
+  width: 46px;
+  flex-shrink: 0;
+}
+
+/* Lifetime risk */
+.riskBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.riskFraction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.riskNum {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 42px;
+  line-height: 1;
+}
+
+.riskDivider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #a78bfa);
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(139,92,246,0.5);
+}
+
+.riskDenom {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 28px;
+  color: rgba(167,139,250,0.8);
+}
+
+.humanIcons {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.humanIcon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Micro column bars (Crude Rate card) */
+.microBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 60px;
+  margin-top: auto;
+}
+
+.microBarCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.microBarTrack {
+  flex: 1;
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px 3px 0 0;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.microBarFill {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+}
+
+.microBarLabel {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(167,139,250,0.4);
+}
