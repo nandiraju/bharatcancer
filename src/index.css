@@ -44,7 +44,7 @@ html, body, #root {
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
+  overflow: hidden; /* desktop default */
 }
 
 /* ─── Dashboard Shell ──────────────────────────────────── */
@@ -640,6 +640,7 @@ html, body, #root {
   border-radius: var(--radius);
   padding: 12px 8px;
   margin-top: -2px;
+  overflow: visible; /* never clip gauge canvas */
 }
 
 .gauge-cell {
@@ -701,3 +702,253 @@ html, body, #root {
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile-first breakpoints
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Mobile tab bar (hidden on desktop) ─────────────────── */
+.mobile-tabs {
+  display: none; /* hidden by default (desktop) */
+}
+
+/* ── Desktop-only elements ──────────────────────────────── */
+.desktop-only {
+  display: flex; /* shown on desktop */
+}
+
+/* ── Mobile-only elements ───────────────────────────────── */
+.mobile-only {
+  display: none; /* hidden on desktop */
+}
+
+/* ══ TABLET — 640px to 1023px ═════════════════════════════ */
+@media (max-width: 1023px) {
+  .dashboard {
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 64px 1fr;
+  }
+
+  /* Left panel takes its column */
+  .panel-left {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* Center takes remaining space */
+  .panel-center {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  /* Right panel floats as bottom sheet overlay */
+  .panel-right {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 260px;
+    height: 52vh;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    z-index: 50;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .panel-right.panel-right--open {
+    transform: translateY(0);
+  }
+
+  /* KPI strip 2×2 */
+  .kpi-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Topbar filter buttons — allow horizontal scroll */
+  .topbar-pills {
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  .topbar-pills::-webkit-scrollbar { display: none; }
+
+  /* Hide year + badge on tablet */
+  .topbar-meta span:not(.topbar-badge) { display: none; }
+}
+
+/* ══ MOBILE — < 640px ═════════════════════════════════════ */
+@media (max-width: 639px) {
+  /* Allow body to fill mobile viewport */
+  html, body, #root {
+    overflow: hidden;
+    height: 100%;
+    height: 100dvh;
+  }
+
+  /* Single column stack */
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ── Topbar — compact ── */
+  .topbar {
+    padding: 0 12px;
+    height: 56px;
+    flex-shrink: 0;
+    gap: 10px;
+  }
+
+  /* Keep brand on left, pills scrollable center, hide meta */
+  .topbar-pills {
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  .topbar-pills::-webkit-scrollbar { display: none; }
+
+  .topbar-meta { display: none; }
+
+  /* ── Panel visibility via tabs ── */
+  .panel-left,
+  .panel-center,
+  .panel-right {
+    flex: 1;
+    min-height: 0;
+    display: none; /* hidden by default — tab JS toggles active */
+    border: none;
+    overflow: hidden;
+  }
+
+  .panel-left.tab-active,
+  .panel-center.tab-active,
+  .panel-right.tab-active {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* allow scrolling within the active panel */
+  }
+
+  /* Panel right: remove fixed border when shown as tab */
+  .panel-right {
+    position: static;
+    transform: none;
+    height: auto;
+    border-top: none;
+    border-radius: 0;
+  }
+
+  /* Detail panel scrolls freely */
+  .detail-scroll {
+    padding: 12px;
+  }
+
+  /* KPI strip — 2×2 grid */
+  .kpi-strip {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 10px 10px 0;
+    gap: 8px;
+  }
+
+  .kpi-value { font-size: 18px; }
+
+  /* Map area fills remaining space */
+  .map-area {
+    padding: 8px 10px 4px;
+  }
+
+  /* Legend wraps */
+  .map-legend {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 10px 8px;
+    justify-content: flex-start;
+  }
+
+  /* Gauge grid — ensure cells are wide enough for the 130px canvas gauges */
+  .gauge-grid {
+    grid-template-columns: 1fr 1fr;
+    min-width: 0;
+    padding: 8px 2px;
+    gap: 0;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    margin-top: 0;
+  }
+
+  .gauge-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    padding: 4px 0;
+  }
+
+  /* Rank callout compact */
+  .rank-number { font-size: 28px; }
+
+  /* State list rows taller tap targets */
+  .state-row { padding: 10px 10px; }
+
+  /* Detail stat values slightly smaller */
+  .detail-stat-value { font-size: 15px; }
+
+  /* ── Mobile bottom tab bar ── */
+  .mobile-tabs {
+    display: flex;
+    flex-shrink: 0;
+    align-items: stretch;
+    height: 58px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .mobile-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: none;
+    background: none;
+    color: var(--text-3);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
+  }
+
+  .mobile-tab svg {
+    transition: color 0.15s ease, filter 0.15s ease;
+  }
+
+  .mobile-tab.active {
+    color: #b8e4ff;
+  }
+
+  .mobile-tab.active svg {
+    filter: drop-shadow(0 0 4px rgba(130, 210, 255, 0.70));
+  }
+
+  /* Show / hide desktop-only vs mobile-only */
+  .desktop-only { display: none !important; }
+  .mobile-only  { display: flex !important; }
+}
+

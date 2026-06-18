@@ -198,8 +198,41 @@
 }
 
 /* ── Responsive scaling ───────────────────────────────────── */
-@media (max-width: 480px) {
+
+/* gauge-cell fills its grid column and centres the gauge */
+.gauge-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible; /* allow gauge shadow to breathe */
+}
+
+@media (max-width: 639px) {
+  .gauge-cell {
+    width: 100%;
+    overflow: hidden;
+  }
+
   .gauge-wrapper {
-    --gauge-size: min(var(--gauge-size), 200px) !important;
+    /* Gauge is always 130px wide. Scale to fill ~half the mobile screen.
+       Target cell width ≈ (390 - 24px padding - 4px gap) / 2 = 181px
+       Scale factor = 140 / 130 ≈ 1.08 but we want to keep it ≤1 so clamp.
+       On 390px screen: cell ≈ 181px → scale = 181/130 = 1.39 (too big)
+       Keep gauge at native 130px but ensure cell is at least 130px wide. */
+    flex-shrink: 0;
+  }
+
+  /* Make gauge-grid have enough room */
+  .gauge-grid {
+    padding: 10px 4px;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 360px) {
+  .gauge-wrapper {
+    transform: scale(0.85);
+    transform-origin: top center;
+    margin-bottom: -20px;
   }
 }

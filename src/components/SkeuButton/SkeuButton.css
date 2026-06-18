@@ -195,3 +195,29 @@
   color: #fda4af;
   filter: drop-shadow(0 0 5px rgba(244, 63, 94, 0.80));
 }
+
+/* ══ MOBILE overrides ════════════════════════════════════ */
+@media (max-width: 639px) {
+  /* Shrink sm buttons to fit the compact topbar */
+  .skeu-btn--labeled.skeu-btn--sm {
+    height: 32px;
+    padding: 0 10px;
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .skeu-btn--labeled.skeu-btn--sm .skeu-btn__label {
+    font-size: 10px;
+  }
+
+  .skeu-btn--labeled.skeu-btn--sm .skeu-btn__icon svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* Reduce standalone sm square buttons */
+  .skeu-btn--sm:not(.skeu-btn--labeled) {
+    width: 32px;
+    height: 32px;
+  }
+}

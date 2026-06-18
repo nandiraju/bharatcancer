@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   FaMap, FaHeartPulse, FaLocationDot, FaChartBar,
   FaMicroscope, FaVial, FaRibbon, FaDna,
@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa6';
 import {
   Layers, Mars, Venus, Building2, Trees, ListOrdered,
+  Map, List, BarChart2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { STATES, NATIONAL_TOTALS } from './data/stateData';
@@ -56,12 +57,26 @@ function cirGaugeTheme(cir) {
 }
 
 // ── Main App ─────────────────────────────────────────────
+// Detect mobile viewport
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)');
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return isMobile;
+}
+
 export default function App() {
   const [selected,    setSelected]   = useState(null);
   const [sortKey,     setSortKey]    = useState('newCases');
   const [search,      setSearch]     = useState('');
   const [filterMode,  setFilterMode] = useState('all');
   const [showRanks,   setShowRanks]  = useState(false);
+  const [activeTab,   setActiveTab]  = useState('map'); // mobile tab: 'map' | 'states' | 'detail'
+  const isMobile = useIsMobile();
 
   // Flatten state data for the active filter mode
   const activeStates = useMemo(() =>
@@ -99,7 +114,12 @@ export default function App() {
     selected ? sortedAll.findIndex(s => s.id === selected) + 1 : null, [selected, sortedAll]);
 
   const handleSelect = useCallback((id) => {
-    setSelected(prev => prev === id ? null : id);
+    setSelected(prev => {
+      const next = prev === id ? null : id;
+      // Auto-switch to detail tab on mobile when selecting a state
+      if (next && window.innerWidth < 640) setActiveTab('detail');
+      return next;
+    });
   }, []);
 
   // Derived gauge values (only when a state is selected)
@@ -160,7 +180,7 @@ export default function App() {
       </header>
 
       {/* ── Left: State List ──────────────────────────────── */}
-      <aside className="panel-left">
+      <aside className={`panel-left${isMobile && activeTab === 'states' ? ' tab-active' : ''}`}>
         <div className="panel-header">
           <div className="panel-header-row">
             <span className="panel-title">States &amp; UTs</span>
@@ -223,7 +243,7 @@ export default function App() {
       </aside>
 
       {/* ── Center: KPI + Map ─────────────────────────────── */}
-      <main className="panel-center">
+      <main className={`panel-center${isMobile && activeTab === 'map' ? ' tab-active' : ''}`}>
         <div className="kpi-strip">
           {[
             { icon: <FaHospital size={10} color="var(--indigo)" />,    label: 'Total New Cases',  val: fmt(national.newCases), sub: 'India · 2022 · GLOBOCAN',        color: 'var(--indigo)'   },
@@ -273,7 +293,7 @@ export default function App() {
       </main>
 
       {/* ── Right: State Detail + Gauges ──────────────────── */}
-      <aside className="panel-right">
+      <aside className={`panel-right${selected && !isMobile ? ' panel-right--open' : ''}${isMobile && activeTab === 'detail' ? ' tab-active' : ''}`}>
         <AnimatePresence mode="wait">
           {!selectedState ? (
             <motion.div
@@ -450,6 +470,37 @@ export default function App() {
           )}
         </AnimatePresence>
       </aside>
+
+      {/* ── Mobile bottom tab bar ──────────────────────────── */}
+      <nav className="mobile-tabs" role="tablist">
+        <button
+          className={`mobile-tab${activeTab === 'map' ? ' active' : ''}`}
+          onClick={() => setActiveTab('map')}
+          role="tab"
+          aria-selected={activeTab === 'map'}
+        >
+          <Map size={20} strokeWidth={1.8} />
+          Map
+        </button>
+        <button
+          className={`mobile-tab${activeTab === 'states' ? ' active' : ''}`}
+          onClick={() => setActiveTab('states')}
+          role="tab"
+          aria-selected={activeTab === 'states'}
+        >
+          <List size={20} strokeWidth={1.8} />
+          States
+        </button>
+        <button
+          className={`mobile-tab${activeTab === 'detail' ? ' active' : ''}`}
+          onClick={() => setActiveTab('detail')}
+          role="tab"
+          aria-selected={activeTab === 'detail'}
+        >
+          <BarChart2 size={20} strokeWidth={1.8} />
+          Detail
+        </button>
+      </nav>
     </div>
   );
 }
