@@ -94,6 +94,17 @@ export const GENDER_SPLIT = {
   source: 'GLOBOCAN 2022',
 };
 
+// ── Care-cascade rates — national ICMR averages applied per-state ─────────────
+// These represent the proportion of new cases that reach each stage of care.
+// Source: ICMR, NCI India estimates; used as indicative national benchmarks.
+export const CARE_CASCADE_RATES = [
+  { key: 'estimated',  label: 'Estimated Cases',      rate: 1.00, description: 'Total estimated new cases · 2022' },
+  { key: 'diagnosed',  label: 'Clinically Diagnosed',  rate: 0.82, description: '~82% reach formal diagnosis (ICMR est.)' },
+  { key: 'treatment',  label: 'Treatment Initiated',   rate: 0.61, description: '~61% begin formal treatment' },
+  { key: 'completed',  label: 'Treatment Completed',   rate: 0.44, description: '~44% complete full treatment course' },
+  { key: 'survivors',  label: '5-yr Survivors',        rate: 0.38, description: '~38% relative 5-year survival (all cancers)' },
+];
+
 // Top states for heatmap coloring
 export const HIGH_BURDEN_STATES = ['Uttar Pradesh', 'Maharashtra', 'West Bengal', 'Bihar', 'Tamil Nadu', 'Karnataka'];
 export const MEDIUM_BURDEN_STATES = ['Delhi', 'Kerala', 'Assam', 'Rajasthan', 'Andhra Pradesh', 'Telangana'];

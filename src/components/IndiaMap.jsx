@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, memo } from 'react';
 import india from '@svg-maps/india';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -410,4 +410,4 @@ function IndiaMap({ statesById, selected, onSelect, showRanks = false, stateRank
   );
 }
 
-export default IndiaMap;
+export default memo(IndiaMap);

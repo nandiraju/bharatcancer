@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo, useMemo } from 'react';
 import './Gauge.css';
 
 const COLOR_THEMES = {
@@ -79,7 +79,7 @@ const COLOR_THEMES = {
  * @param {number} props.dangerZone     - Value at which ticks turn color (0 = none)
  * @param {number} props.tickCount      - Number of major tick marks (default: 11)
  */
-export default function Gauge({
+const Gauge = memo(function Gauge({
   value = 0,
   min = 0,
   max = 100,
@@ -95,10 +95,10 @@ export default function Gauge({
   const canvasRef = useRef(null);
   const [displayValue, setDisplayValue] = useState(animated ? min : value);
   const animFrameRef = useRef(null);
-  const theme = COLOR_THEMES[color] || COLOR_THEMES.blue;
+  const theme = useMemo(() => COLOR_THEMES[color] || COLOR_THEMES.blue, [color]);
 
-  // Face colour palette — switches with isDark
-  const face = isDark ? {
+  // Face colour palette — switches with isDark (memoized for stable reference)
+  const face = useMemo(() => isDark ? {
     outer:         '#0a0a0f',
     c0:            '#2a2a35',
     c1:            '#18181f',
@@ -122,7 +122,7 @@ export default function Gauge({
     hub1:          '#888480',
     hub2:          '#555250',
     hubShadow:     'rgba(0,0,0,0.3)',
-  };
+  }, [isDark]);
 
   // Animate value on change
   useEffect(() => {
@@ -407,4 +407,6 @@ export default function Gauge({
       {label && <div className="gauge-label">{label}</div>}
     </div>
   );
-}
+});
+
+export default Gauge;

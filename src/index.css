@@ -54,6 +54,17 @@ html, body, #root {
   grid-template-columns: 280px 1fr 360px;
   height: 100vh;
   gap: 0;
+  position: relative;
+  transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Kill transition during drag-resize for instant, jitter-free updates */
+.dashboard.is-resizing {
+  transition: none !important;
+}
+.dashboard.is-resizing * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 /* ─── Top Bar ──────────────────────────────────────────── */
@@ -143,6 +154,89 @@ html, body, #root {
   padding: 2px 8px;
 }
 
+/* ── Custom Skeuomorphic Circular Help Button & Well ── */
+.skeu-help-well {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #111215;
+  /* Circular recess depth */
+  box-shadow: 
+    inset 0 3px 5px rgba(0, 0, 0, 0.85),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 3px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.skeu-help-btn {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #32333b 0%, #1e1e23 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  padding: 0;
+  
+  /* Raised 3D keycap look inside well */
+  box-shadow:
+    0 3px 4px rgba(0, 0, 0, 0.65),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.skeu-help-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+  pointer-events: none;
+}
+
+.skeu-help-btn:hover {
+  background: linear-gradient(135deg, #3b3c45 0%, #23232b 100%);
+}
+
+.skeu-help-btn:active {
+  transform: translateY(1.5px);
+  box-shadow:
+    0 1.5px 2px rgba(0, 0, 0, 0.70),
+    inset 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Glowing letter i text using Gradient fill */
+.skeu-help-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  background: linear-gradient(180deg, #ff4c3b 0%, #ff8c00 50%, #ffcc00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+  line-height: 1;
+  /* Centering adjustment inside circular button */
+  transform: translateY(-0.5px);
+  filter: none;
+  transition: filter 0.15s ease;
+  user-select: none;
+}
+
+.skeu-help-btn:hover .skeu-help-text {
+  filter:
+    drop-shadow(0 0 2px rgba(255, 120, 0, 0.80))
+    drop-shadow(0 0 6px rgba(255, 69, 0, 0.35));
+}
+
 /* ─── Left Panel ───────────────────────────────────────── */
 .panel-left {
   background: var(--surface);
@@ -150,6 +244,14 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: opacity 0.25s ease, border-right-color 0.25s ease;
+  min-height: 0; /* force grid containment */
+}
+
+.panel-left.collapsed {
+  opacity: 0;
+  border-right-color: transparent;
+  pointer-events: none;
 }
 
 .panel-header {
@@ -280,17 +382,20 @@ html, body, #root {
 .panel-center {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden;          /* clip content so grid track can shrink freely */
   background: var(--bg);
+  min-height: 0;
+  min-width: 0;              /* allow grid column to shrink below min-content */
 }
 
 /* KPI strip */
 .kpi-strip {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   padding: 12px 14px 0;
   flex-shrink: 0;
+  min-width: 0;              /* allow shrink inside flex column */
 }
 
 .kpi-card {
@@ -315,6 +420,17 @@ html, body, #root {
   display: flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.kpi-label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
 }
 
 .kpi-value {
@@ -323,12 +439,19 @@ html, body, #root {
   letter-spacing: -0.02em;
   line-height: 1;
   font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kpi-sub {
   font-size: 10px;
   color: var(--text-3);
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 /* Map area */
@@ -338,7 +461,7 @@ html, body, #root {
   align-items: center;
   justify-content: center;
   padding: 12px 14px 8px;
-  min-height: 0;
+  min-height: 320px;
   position: relative;
 }
 
@@ -391,6 +514,8 @@ html, body, #root {
   gap: 20px;
   padding: 0 14px 10px;
   flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .legend-label {
@@ -417,17 +542,160 @@ html, body, #root {
   color: var(--text-3);
 }
 
+/* ─── Funnel chart header strip ────────────────────────── */
+.chart-row-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 16px 4px;
+}
+
+.chart-row-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.chart-row-sub {
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ─── Right Panel ──────────────────────────────────────── */
 .panel-right {
+  position: relative;
   background: var(--surface);
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0; /* force grid containment */
+}
+
+/* ─── Resize Handle ────────────────────────────────────── */
+.resize-trigger {
+  position: absolute;
+  /* `right` is set inline via JSX: (rightWidth - 8) */
+  top: 72px;        /* below topbar */
+  bottom: 0;
+  width: 16px;
+  cursor: col-resize;
+  z-index: 100;     /* above both center & right panels */
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Kill transition during drag-resize for instant updates */
+.dashboard.is-resizing .resize-trigger {
+  transition: none !important;
+}
+
+.resize-trigger::before {
+  content: '';
+  position: absolute;
+  left: 7px; /* Align with the actual border line */
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background 0.15s;
+  pointer-events: none;
+}
+
+.resize-trigger:hover::before {
+  background: var(--indigo);
+}
+
+.resize-handle {
+  width: 12px;
+  height: 48px;
+  background: var(--surface2);
+  border: 1px solid var(--border-hi);
+  border-radius: 999px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.55);
+  transition: border-color 0.15s, background-color 0.15s, transform 0.1s;
+  pointer-events: none;
+}
+
+.resize-trigger:hover .resize-handle {
+  border-color: var(--indigo);
+  background: #191c2c; /* Indigo tinted surface */
+  transform: scale(1.05);
+}
+
+.resize-grip-line {
+  width: 6px;
+  height: 2px;
+  background: var(--text-3);
+  border-radius: 1px;
+  transition: background 0.15s;
+}
+
+.resize-trigger:hover .resize-grip-line {
+  background: var(--indigo);
+}
+
+/* Active drag state — keeps handle visible when cursor moves fast */
+.resize-trigger.active::before {
+  background: var(--indigo);
+}
+.resize-trigger.active .resize-handle {
+  border-color: var(--indigo);
+  background: #191c2c;
+  transform: scale(1.05);
+}
+.resize-trigger.active .resize-grip-line {
+  background: var(--indigo);
+}
+
+/* ─── Left Toggle Button ───────────────────────────────── */
+.left-toggle-btn {
+  position: absolute;
+  bottom: 20px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border-hi);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 110;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+  transform: translateX(-50%);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+}
+
+.left-toggle-btn:hover {
+  background: #191c2c; /* Indigo tinted surface */
+  border-color: var(--indigo);
+  color: var(--text);
+  transform: translateX(-50%) scale(1.1);
+}
+
+.left-toggle-btn:active {
+  transform: translateX(-50%) scale(0.95);
 }
 
 .detail-empty {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -435,19 +703,17 @@ html, body, #root {
   gap: 10px;
   color: var(--text-3);
   font-size: 13px;
-  padding: 20px;
+  padding: 40px 20px;
   text-align: center;
 }
 
 .detail-empty svg { opacity: 0.2; }
 
 .detail-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 }
 
 .detail-scroll::-webkit-scrollbar { width: 4px; }
@@ -471,10 +737,10 @@ html, body, #root {
 }
 
 .detail-state-name {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .detail-cir-badge {
@@ -491,7 +757,7 @@ html, body, #root {
 
 .detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
@@ -499,7 +765,8 @@ html, body, #root {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 10px 12px;
+  padding: 8px 10px;
+  min-width: 0; /* Enable shrinking */
 }
 
 .detail-stat-label {
@@ -512,20 +779,38 @@ html, body, #root {
   display: flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.detail-stat-label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
 }
 
 .detail-stat-value {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 800;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: -0.02em;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .detail-stat-sub {
   font-size: 10px;
   color: var(--text-3);
   margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 .detail-section-title {
@@ -569,14 +854,14 @@ html, body, #root {
   background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.06));
   border: 1px solid rgba(99,102,241,0.25);
   border-radius: var(--radius);
-  padding: 12px;
+  padding: 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .rank-number {
-  font-size: 36px;
+  font-size: 24px;
   font-weight: 900;
   font-family: 'JetBrains Mono', monospace;
   color: var(--indigo);
@@ -631,16 +916,19 @@ html, body, #root {
 }
 
 /* ─── Gauge Grid ───────────────────────────────────────── */
-.gauge-grid {
+.gauge-row-card {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
   background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 8px;
-  margin-top: -2px;
-  overflow: visible; /* never clip gauge canvas */
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 14px 8px 10px;
+  box-shadow:
+    inset 0 2px 8px rgba(0,0,0,0.55),
+    inset 0 -1px 4px rgba(255,255,255,0.03),
+    0 1px 3px rgba(0,0,0,0.3);
+  overflow: visible;
 }
 
 .gauge-cell {
@@ -648,7 +936,7 @@ html, body, #root {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
 .map-tooltip {
@@ -754,7 +1042,8 @@ html, body, #root {
     z-index: 50;
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .panel-right.panel-right--open {
@@ -864,6 +1153,7 @@ html, body, #root {
   /* Map area fills remaining space */
   .map-area {
     padding: 8px 10px 4px;
+    min-height: 0;
   }
 
   /* Legend wraps */
@@ -874,23 +1164,20 @@ html, body, #root {
     justify-content: flex-start;
   }
 
-  /* Gauge grid — ensure cells are wide enough for the 130px canvas gauges */
-  .gauge-grid {
-    grid-template-columns: 1fr 1fr;
+  /* Gauge rows — keep card style on mobile */
+  .gauge-row-card {
+    grid-template-columns: repeat(3, 1fr);
     min-width: 0;
     padding: 8px 2px;
     gap: 0;
     overflow: visible;
-    background: transparent;
-    border: none;
-    margin-top: 0;
   }
 
   .gauge-cell {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 130px;
+    min-width: 0;
     padding: 4px 0;
   }
 

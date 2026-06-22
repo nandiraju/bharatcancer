@@ -1,0 +1,749 @@
+/* ═══════════════════════════════════════════════════════════
+   AboutOverlay CSS — Diagnostic Reference Terminal
+   Ultra-modern skeuomorphic styling to match dark dashboard
+   ═══════════════════════════════════════════════════════════ */
+
+.about-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(8, 10, 15, 0.88);
+  backdrop-filter: blur(14px) saturate(130%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* ── Metallic Terminal Bezel ───────────────────────────────── */
+.about-terminal-bezel {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  max-height: 90vh;
+  background: linear-gradient(150deg, #22242b 0%, #121317 100%);
+  border-radius: 20px;
+  box-shadow:
+    /* Outer rim */
+    0 0 0 1px rgba(0, 0, 0, 0.85),
+    /* 3D bottom bezel height */
+    0 12px 0 0 #0d0e11,
+    /* Neon glow backing */
+    0 0 40px rgba(99, 102, 241, 0.12),
+    /* Deep drop shadows */
+    0 25px 60px rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-2);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* Diagonal reflection glare over the screen */
+.about-terminal-bezel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 60%);
+  pointer-events: none;
+  border-radius: 20px 20px 0 0;
+  z-index: 5;
+}
+
+/* ── 3D Screws / Rivets in Bezel Corners ────────────────────── */
+.terminal-screw {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 4px 4px, #585b63 0%, #212328 100%);
+  border: 1px solid #0b0c0e;
+  box-shadow: 
+    inset 0 1px 1px rgba(255,255,255,0.15), 
+    0 1px 2px rgba(0,0,0,0.6);
+  z-index: 6;
+}
+
+/* Screw slots */
+.terminal-screw::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 1.5px;
+  background: #0d0e10;
+  top: 5px;
+  left: 2px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.terminal-screw.top-left  { top: 12px; left: 12px; }
+.terminal-screw.top-left::after { transform: rotate(35deg); }
+
+.terminal-screw.top-right { top: 12px; right: 12px; }
+.terminal-screw.top-right::after { transform: rotate(120deg); }
+
+.terminal-screw.bottom-left  { bottom: 12px; left: 12px; }
+.terminal-screw.bottom-left::after { transform: rotate(-45deg); }
+
+.terminal-screw.bottom-right { bottom: 12px; right: 12px; }
+.terminal-screw.bottom-right::after { transform: rotate(70deg); }
+
+/* ── Header ────────────────────────────────────────────────── */
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #0d0e11;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.terminal-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.terminal-logo-placeholder {
+  font-size: 20px;
+  color: var(--indigo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 6px rgba(99,102,241,0.6));
+}
+
+.terminal-title-block h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.terminal-title-block p {
+  font-size: 11px;
+  color: var(--text-3);
+  margin: 2px 0 0 0;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+/* ── Emergency Mechanical Close Button ──────────────────────── */
+.emergency-close-wrap {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  background: repeating-linear-gradient(-45deg, #eab308, #eab308 4px, #151619 4px, #151619 8px);
+  border-radius: 50%;
+  border: 2px solid #0a0b0d;
+  box-shadow: 
+    0 2px 5px rgba(0,0,0,0.6), 
+    inset 0 1px 3px rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.1s ease;
+}
+
+.emergency-close-wrap:hover {
+  transform: scale(1.04);
+}
+
+.emergency-plunger {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 10px 10px, #f43f5e 0%, #be123c 60%, #881337 100%);
+  border: 1px solid #6f0d26;
+  box-shadow:
+    0 3px 0 0 #7f1d1d,
+    0 5px 8px rgba(0,0,0,0.5),
+    inset 0 2px 2px rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  user-select: none;
+  transition: all 0.1s ease;
+}
+
+.emergency-close-wrap:active .emergency-plunger {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 0 #7f1d1d,
+    0 2px 4px rgba(0,0,0,0.6),
+    inset 0 2px 2px rgba(0,0,0,0.4);
+}
+
+/* ── Recessed Tabs Tray ─────────────────────────────────────── */
+.terminal-tabs-tray {
+  background: #090a0c;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.85);
+  border-radius: 12px;
+  padding: 5px;
+  display: inline-flex;
+  gap: 6px;
+  margin-bottom: 22px;
+  align-self: flex-start;
+  flex-shrink: 0;
+  z-index: 6;
+}
+
+.terminal-tab {
+  background: linear-gradient(180deg, #373941 0%, #24262d 100%);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(160, 160, 168, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.65),
+    0 3px 0 0 rgba(0, 0, 0, 0.45),
+    0 3px 5px rgba(0, 0, 0, 0.35);
+  transition: all 0.1s ease;
+}
+
+.terminal-tab:hover {
+  color: #fff;
+  background: linear-gradient(180deg, #3f414a 0%, #2b2d35 100%);
+}
+
+.terminal-tab:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.65),
+    0 1px 0 0 rgba(0, 0, 0, 0.45),
+    0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.terminal-tab.active {
+  background: linear-gradient(180deg, #202228 0%, #16171b 100%);
+  color: #fff;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.85),
+    inset 0 2px 4px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255,255,255,0.03);
+  transform: translateY(2px);
+}
+
+/* ── Tab LED lights ────────────────────────────────────────── */
+.led-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3c3e44;
+  border: 1px solid #1a1b1e;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
+  transition: background 0.20s ease, box-shadow 0.20s ease;
+}
+
+.terminal-tab:nth-child(1).active .led-dot {
+  background: #10b981;
+  box-shadow:
+    0 0 8px #10b981,
+    0 0 14px rgba(16,185,129,0.5),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+.terminal-tab:nth-child(2).active .led-dot {
+  background: #6366f1;
+  box-shadow:
+    0 0 8px #6366f1,
+    0 0 14px rgba(99,102,241,0.5),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+.terminal-tab:nth-child(3).active .led-dot {
+  background: #f59e0b;
+  box-shadow:
+    0 0 8px #f59e0b,
+    0 0 14px rgba(245,158,11,0.5),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+.terminal-tab:nth-child(4).active .led-dot {
+  background: #06b6d4;
+  box-shadow:
+    0 0 8px #06b6d4,
+    0 0 14px rgba(6,182,212,0.5),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+/* ── Content Viewport ──────────────────────────────────────── */
+.terminal-viewport {
+  flex: 1;
+  background: #090a0d;
+  border-radius: 14px;
+  border: 1px solid #000;
+  box-shadow: 
+    inset 0 4px 12px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(255,255,255,0.03);
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  min-height: 0;
+  z-index: 4;
+}
+
+/* Custom scrollbars inside terminal */
+.terminal-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+.terminal-viewport::-webkit-scrollbar-track {
+  background: #050608;
+  border-radius: 0 14px 14px 0;
+}
+.terminal-viewport::-webkit-scrollbar-thumb {
+  background: #1a1d24;
+  border-radius: 4px;
+  border: 2px solid #050608;
+}
+.terminal-viewport::-webkit-scrollbar-thumb:hover {
+  background: #252933;
+}
+
+/* Recessed card/well inside viewport */
+.recessed-well {
+  background: #0e1117;
+  border: 1px solid #050608;
+  box-shadow: 
+    inset 0 2px 6px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255,255,255,0.02);
+  border-radius: 10px;
+  padding: 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+}
+
+.recessed-well:last-child {
+  margin-bottom: 0;
+}
+
+.recessed-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recessed-title svg {
+  color: var(--indigo);
+  filter: drop-shadow(0 0 3px rgba(99,102,241,0.4));
+}
+
+/* Grid Layouts */
+.grid-three-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.grid-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* ── Core Stat Card Explanation ────────────────────────────── */
+.stat-explain-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-explain-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-explain-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #151821;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.5), 
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.stat-explain-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.stat-explain-desc {
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+
+.stat-explain-meta {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-3);
+  margin-top: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+/* ── Interactive Mock Gauge Tab ────────────────────────────── */
+.interactive-gauge-layout {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.interactive-gauge-cell {
+  background: #090a0d;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mock-slider-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mock-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #060709;
+  border: 1px solid rgba(255,255,255,0.02);
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+}
+
+.mock-slider-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--indigo);
+  width: 44px;
+  text-align: right;
+  text-shadow: 0 0 6px rgba(99,102,241,0.4);
+}
+
+/* Skeuomorphic Range Input Slider */
+.mock-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #111216;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.03);
+}
+
+/* Slider thumb: mechanical metal dial */
+.mock-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 5px 5px, #6c6f78 0%, #2e3037 100%);
+  border: 1px solid #1a1a1f;
+  box-shadow: 
+    0 1px 3px rgba(0,0,0,0.6), 
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: transform 0.05s ease;
+}
+
+.mock-slider::-webkit-slider-thumb:active {
+  transform: scale(1.15);
+  background: radial-gradient(circle at 5px 5px, #818694 0%, #3d4049 100%);
+}
+
+.mock-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 5px 5px, #6c6f78 0%, #2e3037 100%);
+  border: 1px solid #1a1a1f;
+  box-shadow: 
+    0 1px 3px rgba(0,0,0,0.6), 
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: transform 0.05s ease;
+}
+
+.mock-slider::-moz-range-thumb:active {
+  transform: scale(1.15);
+  background: radial-gradient(circle at 5px 5px, #818694 0%, #3d4049 100%);
+}
+
+/* Gauge details list */
+.gauge-desc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.gauge-desc-item {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255,255,255,0.02);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.gauge-desc-name {
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gauge-desc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-3);
+  background: #060709;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ── Charts Explanation Tab ────────────────────────────────── */
+.chart-explain-row {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.chart-explain-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.chart-explain-row:first-child {
+  padding-top: 0;
+}
+
+.chart-explain-preview {
+  background: #07080a;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid rgba(0,0,0,0.3);
+}
+
+.chart-preview-header {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  padding-bottom: 4px;
+}
+
+.chart-preview-gfx {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
+}
+
+.chart-explain-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chart-explain-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.chart-explain-body {
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+
+.chart-explain-bullets {
+  margin: 4px 0 0 0;
+  padding-left: 16px;
+  font-size: 11px;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+
+.chart-explain-bullets li {
+  margin-bottom: 4px;
+}
+
+.chart-explain-bullets li strong {
+  color: #fff;
+}
+
+/* ── Footnote / Sources ─────────────────────────────────────── */
+.terminal-footer {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  border-top: 1px solid #0d0e11;
+  padding-top: 12px;
+  flex-shrink: 0;
+}
+
+.footer-led {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.led-blink {
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: blink-led 2s infinite ease-in-out;
+}
+
+@keyframes blink-led {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; box-shadow: 0 0 8px #10b981; }
+}
+
+/* ── Mobile View Overrides ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .about-terminal-bezel {
+    padding: 16px;
+    max-height: 95vh;
+  }
+  
+  .terminal-header {
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .terminal-title-block h2 {
+    font-size: 13px;
+  }
+  
+  .emergency-close-wrap {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .emergency-plunger {
+    width: 22px;
+    height: 22px;
+    font-size: 8px;
+  }
+
+  .terminal-tabs-tray {
+    margin-bottom: 12px;
+    gap: 4px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .terminal-tab {
+    padding: 6px 4px;
+    font-size: 9px;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .terminal-viewport {
+    padding: 12px;
+  }
+
+  .grid-three-col, .grid-two-col {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .interactive-gauge-layout {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .gauge-desc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-explain-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

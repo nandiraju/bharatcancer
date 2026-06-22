@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   FaMap, FaHeartPulse, FaLocationDot, FaChartBar,
   FaMicroscope, FaVial, FaRibbon, FaDna,
@@ -7,8 +7,6 @@ import {
 import {
   Layers, Mars, Venus, Building2, Trees, ListOrdered,
   Map, List, BarChart2,
-  Maximize2, Minimize2,
-  ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { STATES, NATIONAL_TOTALS } from './data/stateData';
@@ -16,9 +14,6 @@ import IndiaMap from './components/IndiaMap';
 import Gauge from './components/Gauge';
 import { SkeuButton, SkeuButtonGroup } from './components/SkeuButton';
 import SkeuSwitch from './components/SkeuSwitch';
-import AboutOverlay from './components/AboutOverlay';
-import { FunnelChart } from './components/FunnelChart';
-import { MarketBubbles } from './components/MarketBubbles';
 import './index.css';
 
 // ── helpers ──────────────────────────────────────────────
@@ -81,95 +76,8 @@ export default function App() {
   const [search,      setSearch]     = useState('');
   const [filterMode,  setFilterMode] = useState('all');
   const [showRanks,   setShowRanks]  = useState(false);
-  const [showLeft,    setShowLeft]   = useState(true);
   const [activeTab,   setActiveTab]  = useState('map'); // mobile tab: 'map' | 'states' | 'detail'
-  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
-  const [rightWidth,  setRightWidth] = useState(360);
-  const [isResizing,  setIsResizing] = useState(false);
-  const [showAbout,   setShowAbout]  = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const dragRef       = useRef(null);
-  const rightWidthRef = useRef(rightWidth);
-  useEffect(() => { rightWidthRef.current = rightWidth; }, [rightWidth]);
   const isMobile = useIsMobile();
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch((err) => {
-        console.error(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    }
-  }, []);
-
-  // Listen to window resize events to update layout dynamically
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Adjust panel size dynamically if window size shrinks below current rightWidth
-  useEffect(() => {
-    if (windowWidth >= 1024) {
-      const leftPanelWidth = showLeft ? 280 : 0;
-      const maxAllowed = window.innerWidth - (leftPanelWidth + 320); // Leave space for left sidebar and 320px for map
-      if (rightWidth > maxAllowed) {
-        setRightWidth(Math.max(280, maxAllowed));
-      }
-    }
-  }, [windowWidth, rightWidth, showLeft]);
-
-  // Adjust right panel width when showLeft changes to maintain 50/50 split of remaining space
-  useEffect(() => {
-    if (window.innerWidth >= 1024) {
-      const leftPanelWidth = showLeft ? 280 : 0;
-      setRightWidth(Math.floor((window.innerWidth - leftPanelWidth) / 2));
-    }
-  }, [showLeft]);
-
-  // ── Drag-resize handler ─────────────────────────────────────
-  const startResize = useCallback((e) => {
-    e.preventDefault();
-    setIsResizing(true);
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-
-    const startX = e.clientX;
-    const startW = rightWidthRef.current;
-
-    const onMove = (moveEvent) => {
-      const deltaX = moveEvent.clientX - startX;
-      const leftPanelWidth = showLeft ? 280 : 0;
-      const maxAllowed = window.innerWidth - (leftPanelWidth + 320); // Keep at least 320px for map/center panel
-      const newWidth = Math.max(280, Math.min(maxAllowed, startW - deltaX));
-      setRightWidth(newWidth);
-    };
-
-    const onUp = () => {
-      setIsResizing(false);
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    };
-
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  }, [showLeft]);
 
   // Flatten state data for the active filter mode
   const activeStates = useMemo(() =>
@@ -222,62 +130,13 @@ export default function App() {
     const cfr    = +((selectedState.deaths / selectedState.newCases) * 100).toFixed(1);
     const share  = +((selectedState.newCases / national.newCases) * 100).toFixed(1);
     const burden = Math.round(((sortedAll.length - selectedRank) / (sortedAll.length - 1)) * 100);
-    
-    // Estimate late stage (stage III/IV) presentation rate (generally 60-80% in India, higher in rural areas)
-    const ruralShare = selectedState.rural.newCases / selectedState.all.newCases;
-    const lateStage = Math.round(60 + ruralShare * 15);
-
-    // Estimate lifetime risk probability (scaled from the national 1-in-9 risk)
-    const riskRatio = selectedState.cir / NATIONAL_TOTALS.all.cir;
-    const lifetimeRiskPct = +((1 / 9) * riskRatio * 100).toFixed(1);
-
-    return { cfr, share, burden, lateStage, lifetimeRiskPct };
+    return { cfr, share, burden };
   }, [selectedState, selectedRank, sortedAll, national]);
 
-  // Dynamically calculate gauge diameter size to fit exactly two per row
-  const gaugeSize = useMemo(() => {
-    if (isMobile) return 100;
-    return Math.max(90, Math.min(130, Math.floor((rightWidth - 40) / 2.2)));
-  }, [rightWidth, isMobile]);
-
-  const bubblesData = useMemo(() => {
-    if (!selectedState) return [];
-    return [
-      { label: `Male: ${selectedState.topMale || 'Mouth'}`, value: '25%', description: 'Leading site in males' },
-      { label: `Female: ${selectedState.topFemale || 'Breast'}`, value: '32%', description: 'Leading site in females' },
-      { label: `Overall: ${selectedState.topCancer || 'Breast'}`, value: '45%', description: 'Primary oncology burden' },
-    ];
-  }, [selectedState]);
-
-  const funnelStages = useMemo(() => {
-    if (!selectedState || !gaugeData) return [];
-    const survival = Math.max(15, Math.round(100 - gaugeData.cfr * 1.1));
-    return [
-      { label: '1. Screened', value: '100%', description: 'Baseline screening pool' },
-      { label: '2. Diagnosed', value: '82%', description: 'Confirmed pathology cases' },
-      { label: '3. Treated', value: '58%', description: 'Initiated clinical therapy' },
-      { label: '4. 5-Yr Survival', value: `${survival}%`, description: 'Survival rate post-diagnosis' },
-    ];
-  }, [selectedState, gaugeData]);
-
   return (
-    <div 
-      className={`dashboard ${isResizing ? 'is-resizing' : ''}`}
-      style={isMobile ? {} : { gridTemplateColumns: `${showLeft ? 280 : 0}px 1fr ${selected ? rightWidth : 360}px` }}
-    >
+    <div className="dashboard">
       {/* ── Top bar ───────────────────────────────────────── */}
       <header className="topbar">
-        {/* Help Button Gradient Defs */}
-        <svg style={{ width: 0, height: 0, position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
-          <defs>
-            <linearGradient id="helpIconGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ff4500" />
-              <stop offset="60%" stopColor="#ff9500" />
-              <stop offset="100%" stopColor="#ffcc00" />
-            </linearGradient>
-          </defs>
-        </svg>
-
         <div className="topbar-brand">
           <img
             src="/logo.png"
@@ -286,7 +145,7 @@ export default function App() {
           />
         </div>
         <div className="topbar-pills">
-          <SkeuButtonGroup gap={6} dividerAfter={[5]}>
+          <SkeuButtonGroup gap={6}>
             {[
               { id: 'all',    label: 'All Cancers', icon: <Layers   size={15} strokeWidth={1.6} /> },
               { id: 'male',   label: 'Male',        icon: <Mars     size={15} strokeWidth={1.6} /> },
@@ -304,36 +163,22 @@ export default function App() {
                 onClick={() => setFilterMode(id)}
               />
             ))}
-            <SkeuButton
-              size="sm"
-              icon={isFullscreen ? <Minimize2 size={15} strokeWidth={1.6} /> : <Maximize2 size={15} strokeWidth={1.6} />}
-              label={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-              showLabel
-              active={isFullscreen}
-              onClick={toggleFullscreen}
-            />
-            <SkeuSwitch
-              checked={showRanks}
-              onChange={() => setShowRanks(p => !p)}
-              label="Rank"
-            />
           </SkeuButtonGroup>
         </div>
         <div className="topbar-meta">
-          <div className="skeu-help-well" title="Open Statistics Guide">
-            <button
-              className="skeu-help-btn"
-              onClick={() => setShowAbout(true)}
-              aria-label="Statistics Guide"
-            >
-              <span className="skeu-help-text">i</span>
-            </button>
-          </div>
+          {/* Rank toggle */}
+          <SkeuSwitch
+            checked={showRanks}
+            onChange={() => setShowRanks(p => !p)}
+            label="Rank"
+          />
+          <span>2022</span>
+          <span className="topbar-badge">Public Data</span>
         </div>
       </header>
 
       {/* ── Left: State List ──────────────────────────────── */}
-      <aside className={`panel-left ${!showLeft ? 'collapsed' : ''}${isMobile && activeTab === 'states' ? ' tab-active' : ''}`}>
+      <aside className={`panel-left${isMobile && activeTab === 'states' ? ' tab-active' : ''}`}>
         <div className="panel-header">
           <div className="panel-header-row">
             <span className="panel-title">States &amp; UTs</span>
@@ -405,7 +250,7 @@ export default function App() {
             { icon: <FaLocationDot size={10} color="var(--emerald)" />,label: 'States + UTs',     val: NATIONAL_TOTALS.states, sub: 'Covered in this atlas',          color: 'var(--emerald)'  },
           ].map(({ icon, label, val, sub, color }) => (
             <div key={label} className="kpi-card">
-              <div className="kpi-label">{icon}<span>{label}</span></div>
+              <div className="kpi-label">{icon}{label}</div>
               <div className="kpi-value" style={{ color }}>{val}</div>
               <div className="kpi-sub">{sub}</div>
             </div>
@@ -445,7 +290,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* ── Right: State Detail + Gauges + Charts ─────────── */}
+      {/* ── Right: State Detail + Gauges ──────────────────── */}
       <aside className={`panel-right${selected && !isMobile ? ' panel-right--open' : ''}${isMobile && activeTab === 'detail' ? ' tab-active' : ''}`}>
         <AnimatePresence mode="wait">
           {!selectedState ? (
@@ -505,11 +350,12 @@ export default function App() {
                 </div>
               </div>
 
-              {/* ── Live Gauges (#3) ── */}
+              {/* ════════════════════════════════════════════
+                  GAUGE ROW 1 — CIR  ·  Case-Fatality Rate
+                  ════════════════════════════════════════════ */}
               <div className="detail-section-title">Live Gauges</div>
-
-              {/* Row 1: CIR · Fatality · Late Stage */}
-              <div className="gauge-row-card">
+              <div className="gauge-grid">
+                {/* Gauge 1: Crude Incidence Rate */}
                 <div className="gauge-cell">
                   <Gauge
                     value={selectedState.cir}
@@ -518,12 +364,14 @@ export default function App() {
                     color={cirGaugeTheme(selectedState.cir)}
                     label="CIR / 100K"
                     unit=""
-                    size={gaugeSize}
+                    size={130}
                     dangerZone={140}
                     tickCount={8}
                     animated
                   />
                 </div>
+
+                {/* Gauge 2: Case-Fatality Rate (%) */}
                 <div className="gauge-cell">
                   <Gauge
                     value={gaugeData.cfr}
@@ -532,30 +380,19 @@ export default function App() {
                     color="red"
                     label="Fatality %"
                     unit="%"
-                    size={gaugeSize}
+                    size={130}
                     dangerZone={60}
                     tickCount={9}
                     animated
                   />
                 </div>
-                <div className="gauge-cell">
-                  <Gauge
-                    value={gaugeData.lateStage}
-                    min={0}
-                    max={100}
-                    color="orange"
-                    label="Late Stage %"
-                    unit="%"
-                    size={gaugeSize}
-                    dangerZone={75}
-                    tickCount={6}
-                    animated
-                  />
-                </div>
               </div>
 
-              {/* Row 2: India Share · Burden Score · Lifetime Risk */}
-              <div className="gauge-row-card">
+              {/* ════════════════════════════════════════════
+                  GAUGE ROW 2 — National Share  ·  Burden
+                  ════════════════════════════════════════════ */}
+              <div className="gauge-grid">
+                {/* Gauge 3: Share of national cases (%) */}
                 <div className="gauge-cell">
                   <Gauge
                     value={gaugeData.share}
@@ -564,12 +401,14 @@ export default function App() {
                     color="blue"
                     label="India Share"
                     unit="%"
-                    size={gaugeSize}
+                    size={130}
                     dangerZone={8}
                     tickCount={6}
                     animated
                   />
                 </div>
+
+                {/* Gauge 4: Relative Burden Score (rank-inverted, 0–100) */}
                 <div className="gauge-cell">
                   <Gauge
                     value={gaugeData.burden}
@@ -578,42 +417,26 @@ export default function App() {
                     color="orange"
                     label="Burden Score"
                     unit=""
-                    size={gaugeSize}
+                    size={130}
                     dangerZone={70}
-                    tickCount={6}
-                    animated
-                  />
-                </div>
-                <div className="gauge-cell">
-                  <Gauge
-                    value={gaugeData.lifetimeRiskPct}
-                    min={0}
-                    max={25}
-                    color="red"
-                    label="Lifetime Risk"
-                    unit="%"
-                    size={gaugeSize}
-                    dangerZone={15}
                     tickCount={6}
                     animated
                   />
                 </div>
               </div>
 
-              {/* ── Key stats grid (#4) ── */}
+              {/* ── Key stats grid ── */}
               <div>
                 <div className="detail-section-title">Key Statistics · 2022</div>
                 <div className="detail-grid" style={{ marginTop: 10 }}>
                   {[
-                    { icon: <FaHospital size={9} color="var(--indigo)" />,    label: 'New Cases',   val: fmt(selectedState.newCases),       sub: `${((selectedState.newCases / national.newCases) * 100).toFixed(1)}% of India`, color: 'var(--indigo)'  },
-                    { icon: <FaHeartPulse size={9} color="var(--rose)" />,    label: 'Deaths',      val: fmt(selectedState.deaths),         sub: `${gaugeData.cfr}% case-fatality`,                                                   color: 'var(--rose)'    },
-                    { icon: <FaChartBar size={9} color="var(--amber)" />,     label: 'Rank',        val: `#${selectedRank}`,                sub: `of ${NATIONAL_TOTALS.states} states`,                                               color: 'var(--amber)'   },
-                    { icon: <FaMicroscope size={9} color="var(--emerald)" />, label: 'CIR',         val: selectedState.cir,                 sub: 'per 100K pop.',                                                                      color: 'var(--emerald)' },
-                    { icon: <Trees size={9} color="var(--cyan)" />,          label: 'Rural Cases',  val: fmt(selectedState.rural.newCases), sub: `${Math.round((selectedState.rural.newCases / selectedState.all.newCases) * 100)}% rural share`, color: 'var(--cyan)'    },
-                    { icon: <Building2 size={9} color="var(--pink)" />,      label: 'Urban Cases',  val: fmt(selectedState.urban.newCases), sub: `${Math.round((selectedState.urban.newCases / selectedState.all.newCases) * 100)}% urban share`, color: 'var(--pink)'    },
+                    { icon: <FaHospital size={9} color="var(--indigo)" />,   label: 'New Cases', val: fmt(selectedState.newCases), sub: `${((selectedState.newCases / national.newCases) * 100).toFixed(1)}% of India`, color: 'var(--indigo)'  },
+                    { icon: <FaHeartPulse size={9} color="var(--rose)" />,   label: 'Deaths',    val: fmt(selectedState.deaths),   sub: `${gaugeData.cfr}% case-fatality`,                                                   color: 'var(--rose)'    },
+                    { icon: <FaChartBar size={9} color="var(--amber)" />,    label: 'Rank',       val: `#${selectedRank}`,          sub: `of ${NATIONAL_TOTALS.states} states`,                                               color: 'var(--amber)'   },
+                    { icon: <FaMicroscope size={9} color="var(--emerald)" />,label: 'CIR',        val: selectedState.cir,           sub: 'per 100K pop.',                                                                      color: 'var(--emerald)' },
                   ].map(({ icon, label, val, sub, color }) => (
                     <div key={label} className="detail-stat">
-                      <div className="detail-stat-label">{icon}<span>{label}</span></div>
+                      <div className="detail-stat-label">{icon}{label}</div>
                       <div className="detail-stat-value" style={{ color }}>{val}</div>
                       <div className="detail-stat-sub">{sub}</div>
                     </div>
@@ -621,7 +444,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* ── Leading cancers (#5) ── */}
+              {/* ── Leading cancers ── */}
               <div>
                 <div className="detail-section-title">Leading Cancer Sites</div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -637,16 +460,6 @@ export default function App() {
                   ))}
                 </div>
               </div>
-
-              {/* ── Advanced Analysis / Bubble Chart (#6) ── */}
-              <div className="detail-section-title">Advanced Analysis</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <MarketBubbles bubbles={bubblesData} title="Leading Site Burdens" subtitle="Top 3 cancer sites relative to region" />
-              </div>
-
-              {/* ── Funnel Chart (last in panel) ── */}
-              <div className="detail-section-title">Care Pathway Cascade</div>
-              <FunnelChart stages={funnelStages} title="Care Pathway Cascade" subtitle="Patient continuum attrition drops" />
 
               <div style={{ fontSize: 10, color: 'var(--text-3)', borderTop: '1px solid var(--border)', paddingTop: 10 }}>
                 Data: ICMR-NCRP · GLOBOCAN 2022. Estimates for public health planning only.
@@ -686,43 +499,6 @@ export default function App() {
           Detail
         </button>
       </nav>
-
-      {/* Statistics Guide Overlay */}
-      <AnimatePresence>
-        {showAbout && (
-          <AboutOverlay onClose={() => setShowAbout(false)} />
-        )}
-      </AnimatePresence>
-
-      {/* Left panel collapse toggle button */}
-      {!isMobile && (
-        <button
-          className="left-toggle-btn"
-          style={{ left: showLeft ? 280 : 0 }}
-          onClick={() => setShowLeft(prev => !prev)}
-          title={showLeft ? "Collapse Left Panel" : "Expand Left Panel"}
-          aria-label={showLeft ? "Collapse Left Panel" : "Expand Left Panel"}
-        >
-          {showLeft ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
-        </button>
-      )}
-
-      {/* ── Drag-resize handle (dashboard-level, full height) ── */}
-      {!isMobile && (
-        <div
-          ref={dragRef}
-          onMouseDown={startResize}
-          className="resize-trigger"
-          style={{ right: (selected ? rightWidth : 360) - 8 }}
-          title="Drag to resize panel"
-        >
-          <div className="resize-handle">
-            <div className="resize-grip-line" />
-            <div className="resize-grip-line" />
-            <div className="resize-grip-line" />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

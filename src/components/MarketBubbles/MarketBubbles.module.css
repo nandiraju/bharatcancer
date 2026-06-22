@@ -1,0 +1,351 @@
+/* ══════════════════════════════════════════════════════════════
+   MarketBubbles.module.css
+   Two-layer architecture:
+     • .sphereLayer  – sphere graphics, z-index 1/2/3
+     • .textLayer    – text labels, z-index 10 (always on top)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Outer wrapper ───────────────────────────────────────────── */
+.wrapper {
+  /* Fill host container and center contents — mirrors MarketBubbles */
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem 0.75rem;
+  border-radius: 1rem;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.dark {
+  background: transparent;
+}
+
+.light {
+  background:
+    radial-gradient(ellipse 90% 75% at 50% 45%,
+      #d8e8ff 0%,
+      #b8ccff 60%,
+      #9ab0f0 100%);
+}
+
+/* ── Optional heading ────────────────────────────────────────── */
+.heading { text-align: center; }
+
+.dark  .title { color: #ddeeff; }
+.light .title { color: #0a1a4d; }
+
+.title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.15rem;
+}
+
+.dark  .subtitle { color: #6090c8; }
+.light .subtitle { color: #3a5aad; }
+
+.subtitle {
+  font-size: 0.68rem;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* ── CSS-grid overlay ────────────────────────────────────────── */
+/*
+  Both .sphereLayer and .textLayer occupy the same grid cell (1/1).
+  .textLayer sits at z-index:10 → always above sphere z-indexes 1–3.
+*/
+.stageGrid {
+  display: grid;
+  place-items: center;
+  /* Don't let the grid itself shrink narrower than the orb row */
+  width: 100%;
+}
+
+.sphereLayer,
+.textLayer {
+  grid-area: 1 / 1; /* same cell — overlaid */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Push the flex row to center even when total width < stageGrid width */
+  width: 100%;
+}
+
+.textLayer {
+  z-index: 10;
+  pointer-events: none;   /* clicks pass through to sphere layer */
+}
+
+/* ── Shared cell dimensions & margin ────────────────────────── */
+/*
+  --size-ratio: 0.52 | 0.76 | 1.0
+  --base:       clamp(200px, 28vw, 310px)
+  --diameter:   base × size-ratio
+
+  Overlap: each cell has −15 % of its own diameter as inline margin.
+  At this overlap the smaller bubble's center remains ~20 px outside
+  the adjacent (larger) bubble's left edge, so all text is in the
+  visually exposed zone even before the text-layer fix.
+*/
+.bubbleWrap,
+.textSlot {
+  --base:     clamp(120px, calc(var(--panel-width, 360px) * 0.52), 240px);
+  --diameter: calc(var(--base) * var(--size-ratio));
+
+  width:        var(--diameter);
+  height:       var(--diameter);
+  flex-shrink:  0;
+  margin-inline: calc(var(--diameter) * -0.14);
+}
+
+/* .bubbleWrap needs relative positioning for absolute children */
+.bubbleWrap {
+  position: relative;
+  /* pop-in animation: scale + fade; z-index set inline */
+  animation: orbPop 0.6s cubic-bezier(0.22, 1.1, 0.36, 1) both;
+  animation-delay: var(--anim-delay, 0s);
+  /* Smooth scale + lift on hover */
+  transition: transform 0.35s cubic-bezier(0.22, 1.1, 0.36, 1),
+              filter   0.35s ease;
+  cursor: pointer;
+}
+
+.bubbleWrap:hover {
+  transform: scale(1.05) translateY(-4px);
+  filter: brightness(1.06);
+  z-index: 20 !important; /* float above siblings on hover */
+}
+
+/* .textSlot: relative for .content absolute-centering */
+.textSlot {
+  position: relative;
+  /* same timing keeps text in sync with its sphere */
+  animation: orbPop 0.6s cubic-bezier(0.22, 1.1, 0.36, 1) both;
+  animation-delay: var(--anim-delay, 0s);
+  transition: transform 0.35s cubic-bezier(0.22, 1.1, 0.36, 1);
+  pointer-events: none;
+}
+
+/* Keep text slot in sync with its sphere on hover */
+.sphereLayer:has(.bubbleWrap:nth-child(1):hover) ~ .textLayer .textSlot:nth-child(1),
+.sphereLayer:has(.bubbleWrap:nth-child(2):hover) ~ .textLayer .textSlot:nth-child(2),
+.sphereLayer:has(.bubbleWrap:nth-child(3):hover) ~ .textLayer .textSlot:nth-child(3) {
+  transform: scale(1.07) translateY(-6px);
+}
+
+/* ── Pop-in keyframe ─────────────────────────────────────────── */
+@keyframes orbPop {
+  from { opacity: 0; transform: scale(0.55); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Chart row: SVG + legend side-by-side, centered ─────────────── */
+.chartRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* ── Drop shadow beneath sphere ──────────────────────────────── */
+.dropShadow {
+  position: absolute;
+  bottom: -5%;
+  left:   8%;
+  right:  8%;
+  height: 8%;
+  border-radius: 50%;
+  background: var(--c-shadow, rgba(0, 0, 0, 0.45));
+  filter: blur(14px);
+  z-index: 0;
+}
+
+/* ── Sphere shell ────────────────────────────────────────────── */
+/*
+  Glass look: semi-transparent fill + backdrop blur so the dark
+  background bleeds through the tinted orb, matching the reference.
+*/
+.sphere {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
+  /* True glass blur — background shows through slightly frosted */
+  backdrop-filter: blur(6px) saturate(1.4);
+  -webkit-backdrop-filter: blur(6px) saturate(1.4);
+  box-shadow:
+    /* Thin inner top highlight — glass edge separation */
+    inset 0 calc(var(--diameter) * 0.012) calc(var(--diameter) * 0.04)
+      rgba(255, 255, 255, 0.18),
+    /* Inner bottom darkening — depth without heaviness */
+    inset 0 calc(var(--diameter) * -0.02) calc(var(--diameter) * 0.06)
+      rgba(0, 0, 0, 0.15);
+}
+
+/* ── Layer 1 – semi-transparent glass fill ───────────────────── */
+/*
+  Uses color-mix(...transparent) so the dark background bleeds
+  through the tinted fill — this is the core of the "see-through"
+  glass look. Centre is slightly brighter (specular tint), edge fades
+  to a deeper, more transparent version of the hue.
+*/
+.layerBase {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 90% 90% at 44% 40%,
+    color-mix(in srgb, var(--c-base1) 62%, transparent) 0%,
+    color-mix(in srgb, var(--c-base1) 50%, transparent) 38%,
+    color-mix(in srgb, var(--c-base2) 45%, transparent) 68%,
+    color-mix(in srgb, var(--c-base3) 55%, transparent) 100%
+  );
+}
+
+/* ── Layer 2 – crisp glass rim (refraction ring) ─────────────── */
+/*
+  Bright, clean ring right at the sphere edge — the primary visual
+  cue that this is glass rather than a matte plastic ball.
+*/
+.layerRim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent 64%,
+    color-mix(in srgb, var(--c-rim) 18%, transparent) 76%,
+    color-mix(in srgb, var(--c-rim) 60%, transparent) 88%,
+    color-mix(in srgb, var(--c-rim) 95%, white)       95%,
+    rgba(255, 255, 255, 0.35)                          100%
+  );
+}
+
+/* ── Layer 3 – large diffuse glass sheen (top half wash) ─────── */
+/*
+  Wide wash across the top — slightly more opaque than before so
+  the highlight reads clearly even on a translucent fill.
+*/
+.layerSpecPrimary {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 80% 52% at 42% 16%,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.09) 48%,
+    transparent               78%
+  );
+}
+
+/* ── Layer 4 – sharp specular glint (tiny upper-left dot) ────── */
+.layerSpecSecondary {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 12% 8% at 30% 14%,
+    rgba(255, 255, 255, 0.95)  0%,
+    rgba(255, 255, 255, 0.55)  35%,
+    transparent                68%
+  );
+}
+
+/* ── Layer 5 – subtle bottom edge reflection ─────────────────── */
+.layerReflect {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 60% 22% at 52% 92%,
+    color-mix(in srgb, var(--c-rim) 20%, transparent) 0%,
+    transparent 65%
+  );
+}
+
+/* ── Layer 6 – very mild glass edge darkening ────────────────── */
+/*
+  Replaces the heavy vignette. Just a slight ring at the very edge
+  so the boundary reads as a solid disc, not a hollow shell.
+*/
+.layerVignette {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent                60%,
+    rgba(0, 0, 0, 0.08)        80%,
+    rgba(0, 0, 0, 0.18)       100%
+  );
+}
+
+/* ── Text content ────────────────────────────────────────────── */
+/*
+  .content lives inside .textSlot which is in .textLayer (z-index:10).
+  Positioned to fill the inscribed-square safe zone of the circle
+  (inset 16% → content is safely inside the circular area).
+  No overflow:hidden here — text is never clipped by sphere geometry.
+*/
+.content {
+  position: absolute;
+  inset: 16%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.1em;
+}
+
+.bubbleLabel {
+  display: block;
+  font-size: clamp(0.5rem, calc(var(--diameter) * 0.058), 0.7rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
+.bubbleValue {
+  display: block;
+  font-size: clamp(0.85rem, calc(var(--diameter) * 0.14), 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  line-height: 1;
+  text-shadow:
+    0 0 16px rgba(255, 255, 255, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.bubbleDesc {
+  display: block;
+  font-size: clamp(0.48rem, calc(var(--diameter) * 0.046), 0.68rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+  /* Soft cap to avoid very long lines in large bubbles */
+  max-width: 16ch;
+}
+
+@media (max-width: 639px) {
+  .wrapper {
+    padding: 0.75rem 0.25rem 1.25rem;
+  }
+  .wrapper .bubbleWrap,
+  .wrapper .textSlot {
+    --base: calc((100vw - 24px) * 0.55);
+  }
+}

@@ -1,0 +1,135 @@
+/* ══════════════════════════════════════════════════════════════
+   FunnelChart.module.css  —  3D skeuomorphic funnel chart
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper ─────────────────────────────────────────────────── */
+.wrapper {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem 0.75rem;
+  border-radius: 1rem;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.dark  { background: transparent; }
+
+.light {
+  background:
+    radial-gradient(ellipse 85% 70% at 50% 42%,
+      #d8e8ff 0%,
+      #b8ccff 58%,
+      #9ab0f0 100%);
+}
+
+/* ── Optional heading ────────────────────────────────────────── */
+.heading { text-align: center; }
+.dark  .title { color: #ddeeff; }
+.light .title { color: #0a1a4d; }
+.title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.1rem;
+}
+.dark  .subtitle { color: #6090c8; }
+.light .subtitle { color: #3a5aad; }
+.subtitle {
+  font-size: 0.65rem;
+  margin: 0;
+  opacity: 0.78;
+}
+
+/* ── Chart row: SVG on left, legend on right (Centered) ──────── */
+.chartRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* ── Funnel SVG ──────────────────────────────────────────────── */
+.funnelSvg {
+  width: clamp(160px, 50%, 260px);
+  height: auto;
+  overflow: visible;
+  flex-shrink: 0;
+  filter: drop-shadow(0 8px 24px rgba(0, 30, 120, 0.45));
+}
+
+/* ── Legend — Single Column ──────────────────────────────────── */
+.legendWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.55rem;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ── Individual legend item ──────────────────────────────────── */
+.legendItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  transition: opacity 0.2s;
+}
+.legendItem:hover { opacity: 0.85; }
+
+/* ── Diamond bullet ──────────────────────────────────────────── */
+.diamond {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 1.5px;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  margin-top: 0.35em;
+}
+
+/* ── Legend text stack ───────────────────────────────────────── */
+.legendText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.dark  .legendLabel { color: #7aacde; }
+.light .legendLabel { color: #3a5aad; }
+.legendLabel {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.dark  .legendValue { color: #e8f2ff; }
+.light .legendValue { color: #0c1a4a; }
+.legendValue {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.dark  .legendDesc { color: #5a80aa; }
+.light .legendDesc { color: #5a6aaa; }
+.legendDesc {
+  font-size: 0.56rem;
+  font-weight: 400;
+  opacity: 0.65;
+  line-height: 1.35;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
