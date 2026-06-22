@@ -12,11 +12,11 @@
   justify-content: center;
   gap: 0.4rem;
   padding: 0.5rem 0.75rem 0.75rem;
-  border-radius: 1rem;
+  border-radius: 16px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-.dark  { background: transparent; }
+.dark  { /* background handled by .wrapper */ }
 
 .light {
   background:
